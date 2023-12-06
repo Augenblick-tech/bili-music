@@ -1,0 +1,45 @@
+@import 'reset.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--footerHeight: 6rem;
+	--bgColor: white;
+	--panelMargin: 0.5rem;
+}
+
+@layer components {
+	.scrollbar {
+		@apply [&:hover]:overflow-y-auto overflow-hidden;
+	}
+
+	.scrollbar::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	.scrollbar::-webkit-scrollbar-button {
+		background-color: transparent;
+		height: var(--panelMargin);
+	}
+
+	.scrollbar::-webkit-scrollbar-button:vertical:increment {
+		/* background-color: black; */
+		height: calc(var(--footerHeight) + var(--panelMargin));
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb {
+		background: #bcbcbc;
+		border-radius: 5px;
+		margin-right: 2px;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb:hover {
+		background: #a0a0a0;
+	}
+
+	.bm-panel {
+		@apply m-[--panelMargin] mt-0 h-full pb-[--footerHeight] scrollbar;
+	}
+}
