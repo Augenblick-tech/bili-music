@@ -10,7 +10,7 @@ function App() {
 				<BMMain className="flex-1 min-w-0" />
 			</main>
 			<footer>
-				<BMFooter className="absolute bottom-0 h-[--footerHeight] bg-opacity-80 bg-red-500 w-screen" />
+				<BMFooter className="absolute bottom-0 h-[--footerHeight] backdrop-blur-3xl bg-opacity-80 border-t bg-white w-screen" />
 			</footer>
 		</div>
 	)

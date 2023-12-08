@@ -5,7 +5,8 @@
 @tailwind utilities;
 
 :root {
-	--footerHeight: 6rem;
+	--footerHeight: 5rem;
+	--headerHeight: 4.5rem;
 	--bgColor: white;
 	--panelMargin: 0.5rem;
 }
@@ -40,6 +41,6 @@
 	}
 
 	.bm-panel {
-		@apply m-[--panelMargin] mt-0 h-full pb-[--footerHeight] scrollbar;
+		@apply m-[--panelMargin] mt-0 h-[calc(100%-var(--headerHeight))] pb-[--footerHeight] scrollbar;
 	}
 }
