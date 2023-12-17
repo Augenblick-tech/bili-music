@@ -9,4 +9,16 @@ export default defineConfig({
 			'@': '/src',
 		},
 	},
+	server: {
+		proxy: {
+			'/api': {
+				target: 'https://api.bilibili.com',
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/api/, ''),
+				headers: {
+					Referer: 'https://www.bilibili.com/',
+				},
+			},
+		},
+	},
 })
