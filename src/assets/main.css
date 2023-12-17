@@ -7,7 +7,7 @@
 :root {
 	--footerHeight: 5rem;
 	--headerHeight: 4.5rem;
-	--bgColor: white;
+	--bgColor: rgb(247, 249, 252);
 	--panelMargin: 0.5rem;
 }
 
