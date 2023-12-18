@@ -6,9 +6,11 @@
 
 :root {
 	--footerHeight: 5rem;
-	--headerHeight: 4.5rem;
+	--headerHeight: 2rem;
 	--bgColor: rgb(247, 249, 252);
 	--panelMargin: 0.5rem;
+	--safe-area-height: 1.5rem;
+	--window-control-height: 1.5px;
 }
 
 @layer components {
@@ -42,5 +44,56 @@
 
 	.bm-panel {
 		@apply m-[--panelMargin] mt-0 h-[calc(100%-var(--headerHeight))] pb-[--footerHeight] scrollbar;
+	}
+
+	.electron-drag {
+		-webkit-app-region: drag;
+	}
+
+	.minimize::before,
+	.maximize::before,
+	.close::before {
+		content: '';
+		position: absolute;
+		width: 60%;
+		height: var(--window-control-height);
+		top: 50%;
+		left: 50%;
+		background-color: #000;
+		transform: translate(-50%, -50%);
+	}
+
+	.maximize::before {
+		/* 显示一个正方形 */
+		width: 55%;
+		height: 55%;
+		background-color: transparent;
+		border: var(--window-control-height) solid #000;
+		border-radius: 1px;
+	}
+
+	.close::before,
+	.close::after {
+		/* 创建一个 "X" 图标 */
+		content: '';
+		position: absolute;
+		width: 70%;
+		height: var(--window-control-height);
+		top: 50%;
+		left: 50%;
+		background-color: #000;
+		transform: translate(-50%, -50%) rotate(45deg);
+	}
+
+	.close::after {
+		transform: translate(-50%, -50%) rotate(-45deg);
+	}
+
+	.minimize,
+	.maximize,
+	.close {
+		-webkit-app-region: no-drag;
+		position: relative;
+		cursor: pointer;
 	}
 }

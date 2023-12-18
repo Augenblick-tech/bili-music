@@ -4,6 +4,7 @@ import {
 	BiliVideoQuality,
 	BiliVideoInfoResp,
 } from '@/types/bili/BiliVideo'
+import { BiliSearchData } from '@/types/bili/BiliSearch'
 
 interface BiliVideoReq {
 	bvid: string
@@ -35,5 +36,16 @@ export const getBiliVideoInfo = (params: BiliVideoInfoReq) => {
 		url: '/x/web-interface/view',
 		method: 'GET',
 		params,
+	})
+}
+
+export const getBiliVideoSearch = (keyword: string) => {
+	return request<BiliSearchData>({
+		url: '/x/web-interface/wbi/search/type',
+		method: 'GET',
+		params: {
+			search_type: 'video',
+			keyword,
+		}
 	})
 }
