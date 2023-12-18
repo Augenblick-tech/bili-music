@@ -1,8 +1,9 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 const instance = axios.create({
-	baseURL: '/api',
+	baseURL: 'https://api.bilibili.com',
 	timeout: 10000,
+	withCredentials: true,
 })
 
 instance.interceptors.request.use(
