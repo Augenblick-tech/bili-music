@@ -49,12 +49,12 @@ async function createWindow() {
 		title: 'Bili Music',
 		icon: join(process.env.VITE_PUBLIC as string, 'favicon.ico'),
 		webPreferences: {
-			// preload, // 打开加载页面
+			preload, // 加载预加载脚本
 			// Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
 			// Consider using contextBridge.exposeInMainWorld
 			// Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-			nodeIntegration: true,
-			contextIsolation: false,
+			// nodeIntegration: true,
+			// contextIsolation: false,
 		},
 		// frame: false,
 		titleBarStyle: 'hidden',
@@ -87,7 +87,7 @@ async function createWindow() {
 
 	try {
 		// get cookies
-		const cookies = await fs.readJSON(
+		const cookies: Electron.Cookie[] = await fs.readJSON(
 			join(app.getPath('userData'), 'cookies.json')
 		)
 		// console.log('Cookies loaded', cookies)
@@ -96,7 +96,8 @@ async function createWindow() {
 			.join('; ')
 		// console.log('Cookies parsed', parsedCookies)
 	} catch (err) {
-		if (err.code !== 'ENOENT') console.error(err)
+		const error = err as NodeJS.ErrnoException
+		if (error.code !== 'ENOENT') console.error(err)
 		else console.log('Cookies not found')
 	}
 

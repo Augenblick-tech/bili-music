@@ -1,25 +1,18 @@
 import { FC, useState } from 'react'
 import { FCProps } from '@/types/FCProps'
-import { BiliVideoAtom } from '@/stores/BiliVideo'
 import { useAtom } from 'jotai'
-import { getBiliVideoSearch, getBiliVideoInfo } from '@/api/BiliVideo'
-import { ipcRenderer } from 'electron'
+import { getBiliVideoSearch } from '@/api/BiliVideo'
 import { BiliSearchAtom } from '@/stores/BiliVideo'
 
 const BMSearch: FC<FCProps> = ({ className }) => {
-	const [videoAtom, setVideoAtom] = useAtom(BiliVideoAtom)
 	const [searchField, setSearchField] = useState('')
-	const [_, setSearchResult] = useAtom(BiliSearchAtom)
+	const [, setSearchResult] = useAtom(BiliSearchAtom)
 
 	const handleSearch = async () => {
 		const result = await getBiliVideoSearch(searchField)
 		console.log(result)
 		setSearchResult(result.data)
-		console.log(result.data.result[0].bvid)
-		const videoData = await getBiliVideoInfo({
-			bvid: result.data.result[0].bvid,
-		})
-		console.log(videoData)
+		console.log('first search result: ', result.data.result[0])
 	}
 
 	return (
@@ -37,13 +30,13 @@ const BMSearch: FC<FCProps> = ({ className }) => {
 			<button onClick={handleSearch}>搜索</button>
 			<button
 				onClick={() => {
-					ipcRenderer.send('login')
+					window.biliAuth.openLoginWindow()
 				}}>
 				登录
 			</button>
 			<button
 				onClick={() => {
-					ipcRenderer.send('logout')
+					window.biliAuth.handleLogout()
 				}}>
 				注销
 			</button>

@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { FCProps } from '@/types/FCProps'
-import { ipcRenderer } from 'electron'
+// import { ipcRenderer } from 'electron'
 import {
 	MdCropSquare,
 	MdOutlineHorizontalRule,
@@ -9,15 +9,15 @@ import {
 
 const WindowControl: FC<FCProps> = ({ className }) => {
 	const handleMinimize = () => {
-		ipcRenderer.send('minimize')
+		window.windowControl.minimize()
 	}
 
 	const handleMaximize = () => {
-		ipcRenderer.send('maximize')
+		window.windowControl.maximize()
 	}
 
 	const handleClose = () => {
-		ipcRenderer.send('close')
+		window.windowControl.close()
 	}
 
 	return (

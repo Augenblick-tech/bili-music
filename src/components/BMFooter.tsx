@@ -1,13 +1,10 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useRef, useState } from 'react'
 import { FCProps } from '@/types/FCProps'
-// import { BiliVideoURL } from '@/types/bili/BiliVideo'
-import { getBiliVideoURL } from '@/api/BiliVideo'
-import { BiliVideoAtom } from '@/stores/BiliVideo'
+import { readonlyBiliVideoAtom } from '@/stores/BiliVideo'
 import { useAtom } from 'jotai'
 
 const BMFooter: FC<FCProps> = ({ className }) => {
-	// const [videoData, setVideoData] = useState<BiliVideoURL>()
-	const [videoAtom, setVideoAtom] = useAtom(BiliVideoAtom)
+	const [videoAtom] = useAtom(readonlyBiliVideoAtom)
 
 	const videoRef = useRef<HTMLVideoElement>(null)
 	const [videoStat, setVideoStat] = useState<'playing' | 'paused'>('paused')
