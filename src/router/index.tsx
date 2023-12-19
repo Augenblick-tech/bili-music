@@ -1,5 +1,8 @@
-import { createHashRouter } from 'react-router-dom'
+import { RouterProvider, createHashRouter } from 'react-router-dom'
 import App from '@/App'
+import { Suspense, lazy } from 'react'
+
+const BMSearchResult = lazy(() => import('@/views/BMSearchResult'))
 
 const router = createHashRouter([
 	{
@@ -7,15 +10,17 @@ const router = createHashRouter([
 		element: <App />,
 		children: [
 			{
-				path: 'about',
-				element: <h1>About</h1>,
-			},
-			{
-				path: 'users',
-				element: <h1>Users</h1>,
+				path: 'search',
+				element: (
+					<Suspense>
+						<BMSearchResult />
+					</Suspense>
+				),
 			},
 		],
 	},
 ])
 
-export default router
+export default function RouterWrapper() {
+	return <RouterProvider router={router} fallbackElement={<div>Loading</div>} />
+}
