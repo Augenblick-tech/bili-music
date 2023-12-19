@@ -1,6 +1,6 @@
-import { ReactNode } from 'react'
+import { ReactNode } from "react"
 
 export interface FCProps {
-	children?: ReactNode
-	className?: string | ''
+  children?: ReactNode
+  className?: string | ""
 }
