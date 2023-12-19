@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import { FCProps } from '@/types/FCProps'
-// import { ipcRenderer } from 'electron'
 import {
 	MdCropSquare,
 	MdOutlineHorizontalRule,

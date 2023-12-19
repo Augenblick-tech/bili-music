@@ -27,6 +27,11 @@
 		height: var(--panelMargin);
 	}
 
+	.scrollbar::-webkit-scrollbar-button:vertical:decrement {
+		/* background-color: black; */
+		height: 0;
+	}
+
 	.scrollbar::-webkit-scrollbar-button:vertical:increment {
 		/* background-color: black; */
 		height: calc(var(--footerHeight) + var(--panelMargin));
@@ -43,7 +48,7 @@
 	}
 
 	.bm-panel {
-		@apply m-[--panelMargin] mt-0 h-[calc(100%-var(--headerHeight))] pb-[--footerHeight] scrollbar;
+		@apply m-[--panelMargin] mt-0 h-[calc(100%-var(--headerHeight)-var(--safe-area-height)*2)] pb-[--footerHeight] scrollbar;
 	}
 
 	.electron-drag {
