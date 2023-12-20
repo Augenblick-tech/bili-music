@@ -1,4 +1,4 @@
-import { BiliResp } from './BiliResp'
+import { BiliResp } from "./BiliResp"
 
 export interface BiliSearchData {
   seid: number

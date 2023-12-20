@@ -1,16 +1,16 @@
-@import 'reset.css';
+@import "reset.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-	--footerHeight: 5rem;
-	--headerHeight: 2rem;
-	--bgColor: rgb(247, 249, 252);
-	--panelMargin: 0.5rem;
-	--safe-area-height: 1.5rem;
-	--window-control-height: 1.5px;
+  --footerHeight: 5rem;
+  --headerHeight: 2rem;
+  --bgColor: rgb(247, 249, 252);
+  --panelMargin: 0.5rem;
+  --safe-area-height: 1.5rem;
+  --window-control-height: 1.5px;
 }
 
 @layer components {
