@@ -15,7 +15,8 @@
 
 @layer components {
 	.scrollbar {
-		@apply [&:hover]:overflow-y-auto overflow-hidden;
+		@apply overflow-y-auto overflow-hidden;
+		@apply [&::-webkit-scrollbar-thumb]:bg-transparent [&:hover::-webkit-scrollbar-thumb]:bg-[#bcbcbc];
 	}
 
 	.scrollbar::-webkit-scrollbar {
@@ -25,26 +26,13 @@
 	.scrollbar::-webkit-scrollbar-button {
 		background-color: transparent;
 		height: var(--panelMargin);
-	}
-
-	.scrollbar::-webkit-scrollbar-button:vertical:decrement {
-		/* background-color: black; */
-		height: 0;
-	}
-
-	.scrollbar::-webkit-scrollbar-button:vertical:increment {
-		/* background-color: black; */
-		height: calc(var(--footerHeight) + var(--panelMargin));
+		@apply [&:vertical:decrement]:h-[0] [&:vertical:increment]:h-[calc(var(--footerHeight)+var(--panelMargin))];
 	}
 
 	.scrollbar::-webkit-scrollbar-thumb {
-		background: #bcbcbc;
 		border-radius: 5px;
 		margin-right: 2px;
-	}
-
-	.scrollbar::-webkit-scrollbar-thumb:hover {
-		background: #a0a0a0;
+		@apply [&:hover]:bg-[#a0a0a0];
 	}
 
 	.bm-panel {
@@ -53,52 +41,5 @@
 
 	.electron-drag {
 		-webkit-app-region: drag;
-	}
-
-	.minimize::before,
-	.maximize::before,
-	.close::before {
-		content: '';
-		position: absolute;
-		width: 60%;
-		height: var(--window-control-height);
-		top: 50%;
-		left: 50%;
-		background-color: #000;
-		transform: translate(-50%, -50%);
-	}
-
-	.maximize::before {
-		/* 显示一个正方形 */
-		width: 55%;
-		height: 55%;
-		background-color: transparent;
-		border: var(--window-control-height) solid #000;
-		border-radius: 1px;
-	}
-
-	.close::before,
-	.close::after {
-		/* 创建一个 "X" 图标 */
-		content: '';
-		position: absolute;
-		width: 70%;
-		height: var(--window-control-height);
-		top: 50%;
-		left: 50%;
-		background-color: #000;
-		transform: translate(-50%, -50%) rotate(45deg);
-	}
-
-	.close::after {
-		transform: translate(-50%, -50%) rotate(-45deg);
-	}
-
-	.minimize,
-	.maximize,
-	.close {
-		-webkit-app-region: no-drag;
-		position: relative;
-		cursor: pointer;
 	}
 }
