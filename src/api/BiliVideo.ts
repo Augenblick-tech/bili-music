@@ -35,13 +35,19 @@ export const getBiliVideoInfo = (params: BiliVideoInfoReq) => {
   })
 }
 
-export const getBiliVideoSearch = (keyword: string) => {
+interface BiliVideoSearchReq {
+  keyword: string
+  order?: string | "totalrank" | "click" | "pubdate" // 排序方式, 默认为 totalrank, 可选值为 totalrank, click, pubdate, dm, stow
+  page?: number
+}
+
+export const getBiliVideoSearch = (params: BiliVideoSearchReq) => {
   return request<BiliSearchData>({
     url: "/x/web-interface/wbi/search/type",
     method: "GET",
     params: {
       search_type: "video",
-      keyword,
+      ...params,
     },
   })
 }

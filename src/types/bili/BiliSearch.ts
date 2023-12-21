@@ -9,7 +9,7 @@ export interface BiliSearchData {
   result: BiliSearchResult[]
 }
 
-interface BiliSearchResult {
+export interface BiliSearchResult {
   type: string
   id: number // 视频 avid
   author: string // up 主名
