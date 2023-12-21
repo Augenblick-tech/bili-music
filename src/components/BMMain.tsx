@@ -7,7 +7,7 @@ const BMMain: FC<FCProps> = ({ className }) => {
   return (
     <div className={className}>
       <BMHeader className="h-[--headerHeight]" />
-      <div className="bm-panel">
+      <div className="bm-panel ml-[--safe-area-height]">
         <Outlet />
       </div>
     </div>

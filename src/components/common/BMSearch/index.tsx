@@ -28,6 +28,11 @@ const BMSearch: FC<FCProps> = ({ className }) => {
           type="text"
           className="text-gray-500 h-full w-full bg-transparent outline-none"
           value={searchField}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch()
+            }
+          }}
           onChange={(e) => {
             setSearchField(e.target.value)
           }}
