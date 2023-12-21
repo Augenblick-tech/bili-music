@@ -50,6 +50,11 @@ const BMBottomControlBar: FC<FCProps> = ({ className }) => {
       </IconButton>
     )
   }
+
+  function EndingTimeLabel() {
+    return formatDuration(Math.ceil(currentTime))
+  }
+  
   const AirbnbSlider = styled(Slider)(({ theme }) => ({
     color: "#FC344F",
     height: 3,
@@ -110,7 +115,7 @@ const BMBottomControlBar: FC<FCProps> = ({ className }) => {
           >
             <PlayOrPauseButton />
           </button>
-          {formatDuration(Math.ceil(videoRef.current?.currentTime ?? 0))}
+          <EndingTimeLabel />
           <AirbnbSlider aria-label="Temperature" defaultValue={30} value={progressValue} onMouseUp={(e) => {}} />
         </div>
         <div className="function flex-1">
