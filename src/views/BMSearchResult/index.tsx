@@ -30,7 +30,8 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
     })
       .then((res) => {
         console.log(res)
-        setSearchResult(res.data.result || [])
+        const result = res.data.result.filter((item) => item.type === "video")
+        setSearchResult(result || [])
       })
       .catch((err) => {
         console.log(err)
