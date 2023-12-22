@@ -1,11 +1,10 @@
-import { FC } from "react"
-import { FCProps } from "@/types/FCProps"
 import WindowControl from "@/components/common/WindowControl"
 import BMSearch from "@/components/common/BMSearch"
+import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 
-const BMHeader: FC<FCProps> = ({ className }) => {
+const BMHeader = ({ className }: MergeWithDefaultProps) => {
   return (
-    <div className={`${className} flex m-[--safe-area-height] justify-between items-center select-none`}>
+    <div className={`${className ?? ""} flex m-[--safe-area-height] justify-between items-center select-none`}>
       <BMSearch />
       <div className="left-side flex">
         <div className="user-info space-x-2">

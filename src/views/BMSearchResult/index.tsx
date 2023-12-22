@@ -1,8 +1,5 @@
-import { FCProps } from "@/types/FCProps"
-import { FC, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { getBiliVideoSearch } from "@/api/BiliVideo"
-import { BiliSearchResult } from "@/types/bili/BiliSearch"
 import {
   ListItemButton,
   Table,
@@ -13,11 +10,14 @@ import {
   TableRow,
   tableCellClasses,
 } from "@mui/material"
-import { formatPlayCount, formatTime } from "@/utils/videoUtils"
 import { FaRegCirclePlay } from "react-icons/fa6"
+import { getBiliVideoSearch } from "@/api/BiliVideo"
 import useInfiniteScroll from "@/hooks/useInfiniteScroll"
+import { formatPlayCount, formatTime } from "@/utils/videoUtils"
+import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
+import type { BiliSearchResult } from "@/types/bili/BiliSearch"
 
-const BMSearchResult: FC<FCProps> = ({ className }) => {
+const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
   const [params] = useSearchParams()
   const [searchResult, setSearchResult] = useState<BiliSearchResult[]>()
   const [sort, setSort] = useState<"comprehensive" | "mostPlayed" | "latest">("comprehensive")
@@ -64,10 +64,10 @@ const BMSearchResult: FC<FCProps> = ({ className }) => {
     selected,
     children,
     onClick,
-  }: {
+  }: MergeWithDefaultProps<{
     selected?: boolean
     onClick?: () => void | undefined
-  } & FCProps) => {
+  }>) => {
     return (
       <ListItemButton
         selected={selected}
@@ -89,7 +89,7 @@ const BMSearchResult: FC<FCProps> = ({ className }) => {
   }
 
   return (
-    <div className={className}>
+    <div className={className ?? ""}>
       <div className="title mb-2">
         <span>
           <span className="keyword mr-2 font-bold text-2xl">{params.get("keyword")}</span>

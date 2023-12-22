@@ -1,15 +1,14 @@
-import { FC } from "react"
-import { FCProps } from "@/types/FCProps"
 import useMenu from "./useMenu"
 import { List, ListItemButton, ListItemIcon, ListItemText, Divider } from "@mui/material"
+import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 
-const BMMenuList: FC<FCProps> = ({ className }) => {
+const BMMenuList = ({ className }: MergeWithDefaultProps) => {
   const [current, menuList, changeMenu] = useMenu()
 
   const active = "linear-gradient(90deg, rgb(255,19,103), rgb(252,61,73))"
 
   return (
-    <List className={className}>
+    <List className={className ?? ""}>
       {menuList.map((menu, index) => (
         <div key={menu.key}>
           {menu.isFoldable ? (

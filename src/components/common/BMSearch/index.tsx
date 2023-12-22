@@ -1,13 +1,13 @@
-import { FC, useState } from "react"
-import { FCProps } from "@/types/FCProps"
-import { useAtom } from "jotai"
-import { getBiliVideoSearch } from "@/api/BiliVideo"
-import { BiliSearchAtom } from "@/stores/BiliVideo"
+import { useState } from "react"
 import { IconButton } from "@mui/material"
 import { CiSearch } from "react-icons/ci"
 import { useNavigate } from "react-router-dom"
+import { useAtom } from "jotai"
+import { getBiliVideoSearch } from "@/api/BiliVideo"
+import { BiliSearchAtom } from "@/stores/BiliVideo"
+import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 
-const BMSearch: FC<FCProps> = ({ className }) => {
+const BMSearch = ({ className }: MergeWithDefaultProps) => {
   const [searchField, setSearchField] = useState("")
   const [, setSearchResult] = useAtom(BiliSearchAtom)
   const navigate = useNavigate()
@@ -22,7 +22,7 @@ const BMSearch: FC<FCProps> = ({ className }) => {
   }
 
   return (
-    <div className={`${className} flex space-x-2`}>
+    <div className={`${className ?? ""} flex space-x-2`}>
       <div className="input-wrapper h-9 w-48 border border-gray-300 rounded-xl flex justify-center items-center overflow-hidden p-2">
         <input
           type="text"

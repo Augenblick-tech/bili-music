@@ -1,8 +1,9 @@
 import { useState } from "react"
-import { MenuList, MenuListItem, MenuListPath } from "@/types/MenuList"
+import type { MenuList, MenuListItem, MenuListPath } from "@/types/MenuList"
 
 const useMenu = (): [MenuListPath, MenuList[], (item: MenuListItem) => void] => {
   const [current, setCurrent] = useState<MenuListPath>("pickup")
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [menuList, _] = useState<MenuList[]>([
     {
       isFoldable: false,
