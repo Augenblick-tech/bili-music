@@ -1,6 +1,6 @@
 import BMSider from "@/components/BMSider"
 import BMMain from "@/components/BMMain"
-import BMFooter from "@/components/BMFooter"
+import BMBottomControlBar from "@/components/BMBottomControlBar"
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
         <BMMain className="flex-1 min-w-0 bg-[--bgColor]" />
       </main>
       <footer>
-        <BMFooter className="absolute bottom-0 h-[--footerHeight] backdrop-blur-3xl bg-opacity-60 border-t bg-white w-screen" />
+        <BMBottomControlBar className="absolute bottom-0 h-[--footerHeight] backdrop-blur-3xl bg-opacity-60 border-t bg-white w-screen" />
       </footer>
     </div>
   )
