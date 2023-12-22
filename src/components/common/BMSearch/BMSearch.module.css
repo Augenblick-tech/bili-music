@@ -1,0 +1,12 @@
+@tailwind components;
+
+.bili-music-search {
+  --searchbar-height: 2.25rem;
+  --searchbar-width: 16rem;
+}
+
+@layer components {
+  .search-preview {
+    @apply absolute text-sm top-[calc(var(--searchbar-height)+0.5rem)] left-0 w-[calc(100%+0.5rem+2.5rem)] min-h-[12rem] max-h-[24rem] overflow-hidden p-4 bg-white shadow-md rounded-md;
+  }
+}
