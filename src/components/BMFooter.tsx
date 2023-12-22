@@ -1,9 +1,9 @@
-import { FC, useRef, useState } from "react"
-import { FCProps } from "@/types/FCProps"
-import { readonlyBiliVideoAtom } from "@/stores/BiliVideo"
+import { useRef, useState } from "react"
 import { useAtom } from "jotai"
+import { readonlyBiliVideoAtom } from "@/stores/BiliVideo"
+import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 
-const BMFooter: FC<FCProps> = ({ className }) => {
+const BMFooter = ({ className }: MergeWithDefaultProps) => {
   const [videoAtom] = useAtom(readonlyBiliVideoAtom)
 
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -22,7 +22,7 @@ const BMFooter: FC<FCProps> = ({ className }) => {
   // }, [setVideoAtom])
 
   return (
-    <div className={`${className}`}>
+    <div className={className ?? ""}>
       <main className="flex justify-between relative">
         <div className="song-info flex-1">
           <audio

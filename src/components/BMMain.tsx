@@ -1,11 +1,10 @@
-import { FC } from "react"
-import { FCProps } from "@/types/FCProps"
-import BMHeader from "./BMHeader"
 import { Outlet } from "react-router-dom"
+import BMHeader from "./BMHeader"
+import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 
-const BMMain: FC<FCProps> = ({ className }) => {
+const BMMain = ({ className }: MergeWithDefaultProps) => {
   return (
-    <div className={className}>
+    <div className={className ?? ""}>
       <BMHeader className="h-[--headerHeight]" />
       <div className="bm-panel ml-[--safe-area-height]">
         <Outlet />
