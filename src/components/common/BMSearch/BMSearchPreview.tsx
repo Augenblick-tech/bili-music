@@ -3,7 +3,7 @@ import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { BiliSearchResult } from "@/types/bili/BiliSearch"
 
 type BMSearchPreviewProps = MergeWithDefaultProps<{
-  data?: BiliSearchResult[]
+  data?: BiliSearchResult[] | null
   onClick?: (keyword: string) => void
 }>
 
