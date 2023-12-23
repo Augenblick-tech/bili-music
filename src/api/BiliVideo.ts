@@ -1,5 +1,5 @@
 import { request } from "./axios"
-import { BiliVideoURL, BiliVideoQuality, BiliVideoInfoResp } from "@/types/bili/BiliVideo"
+import { BiliVideoURL, BiliVideoQuality, BiliVideoInfo } from "@/types/bili/BiliVideo"
 import { BiliSearchData } from "@/types/bili/BiliSearch"
 
 interface BiliVideoReq {
@@ -28,7 +28,7 @@ interface BiliVideoInfoReq {
 }
 
 export const getBiliVideoInfo = (params: BiliVideoInfoReq) => {
-  return request<BiliVideoInfoResp>({
+  return request<BiliVideoInfo>({
     url: "/x/web-interface/view",
     method: "GET",
     params,

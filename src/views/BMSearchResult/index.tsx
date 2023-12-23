@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
+import { useAtom } from "jotai"
 import {
   ListItemButton,
   Table,
@@ -11,16 +12,21 @@ import {
   tableCellClasses,
 } from "@mui/material"
 import { FaRegCirclePlay } from "react-icons/fa6"
-import { getBiliVideoSearch } from "@/api/BiliVideo"
+import { getBiliVideoInfo, getBiliVideoSearch, getBiliVideoURL } from "@/api/BiliVideo"
 import useInfiniteScroll from "@/hooks/useInfiniteScroll"
 import { formatPlayCount, formatTime } from "@/utils/videoUtils"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import type { BiliSearchResult } from "@/types/bili/BiliSearch"
+import { changeMusicFromBliVideoAtom, handlePlayMusicAtom, musicPlayerStateAtom } from "@/stores/MusicTrack/MusicTrack"
 
 const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
   const [params] = useSearchParams()
   const [searchResult, setSearchResult] = useState<BiliSearchResult[]>()
   const [sort, setSort] = useState<"comprehensive" | "mostPlayed" | "latest">("comprehensive")
+
+  const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+  const [, changeMusicFromBliVideo] = useAtom(changeMusicFromBliVideoAtom)
+  const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
 
   const keyword = params.get("keyword") || ""
 
@@ -176,8 +182,21 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
                     <div className="pic w-16 h-16 flex-shrink-0 relative rounded-lg mr-4 overflow-hidden">
                       <div className="cover absolute t-0 l-0 h-full w-full hidden">
                         <FaRegCirclePlay
-                          onClick={() => {
-                            console.log("play")
+                          onClick={async () => {
+                            // 立即播放
+                            try {
+                              const info = await getBiliVideoInfo({ bvid: item.bvid })
+                              const media = await getBiliVideoURL({
+                                bvid: item.bvid,
+                                cid: info.data?.cid!,
+                                fnval: 16,
+                              })
+                              changeMusicFromBliVideo(info.data, media.data)
+                              handlePlayMusic()
+                              console.log(musicPlayerState)
+                            } catch (error) {
+                              console.error(error)
+                            }
                           }}
                           className="text-white cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl"
                         />

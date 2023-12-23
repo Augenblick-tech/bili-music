@@ -1,6 +1,7 @@
 import BMSider from "@/components/BMSider"
 import BMMain from "@/components/BMMain"
-import BMFooter from "@/components/BMFooter"
+import BottomControlBar from "@/components/BottomControlBar"
+import GlobalMusicAudio from "./components/GlobalMusicAudio"
 
 function App() {
   return (
@@ -9,9 +10,10 @@ function App() {
       <main className="flex h-[calc(100vh-(1px)*2)] w-[calc(100vw-(1px)*2)]">
         <BMSider className="w-56 bg-[rgb(240,243,246)]" />
         <BMMain className="flex-1 min-w-0 bg-[--bgColor]" />
+        <GlobalMusicAudio className="w-0 h-0 absolute bottom-0 right-0" />
       </main>
       <footer>
-        <BMFooter className="absolute bottom-0 h-[--footerHeight] backdrop-blur-3xl bg-opacity-60 border-t bg-white w-screen" />
+        <BottomControlBar className="absolute bottom-0 h-[--footerHeight] backdrop-blur-3xl bg-opacity-60 border-t bg-white w-screen" />
       </footer>
     </div>
   )
