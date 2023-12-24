@@ -3,48 +3,36 @@ import { IconButton } from "@mui/material"
 import { CiSearch } from "react-icons/ci"
 import { useNavigate } from "react-router-dom"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
-import { getBiliVideoSearch } from "@/api/BiliVideo"
-import { BiliSearchResult } from "@/types/bili/BiliSearch"
 import useDebounce from "@/hooks/useDebounce"
-import BMSearchPreview from "./BMSearchPreview"
-import BMSearchClasses from "./BMSearch.module.css"
+import BMSearchPreview from "./SearchPreview"
+import BMSearchClasses from "./SearchBar.module.css"
 import useOutsideClick from "@/hooks/useOutsideClick"
+import { useAtom } from "jotai"
+import { handleSearchPreviewResultsAtom } from "@/stores/BiliSearch/BiliSearch"
 
 const BMSearch = ({ className }: MergeWithDefaultProps) => {
   const [searchField, setSearchField] = useState("")
-  const [searchResult, setSearchResult] = useState<BiliSearchResult[]>()
+  const [searchPreviewResults, handleSearchPreviewResults] = useAtom(handleSearchPreviewResultsAtom)
   const navigate = useNavigate()
   const inputRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const [isShow, setIsShow] = useOutsideClick(inputRef, previewRef)
+  const debouncedSearchField = useDebounce(searchField, 100)
 
   const handleSearch = (keyword: string) => {
     if (!keyword) return
     setIsShow(false)
+    setSearchField(keyword)
     navigate(`/search?keyword=${keyword}`)
-  }
-
-  const debouncedSearchField = useDebounce(searchField, 200)
-
-  const handleSearchFieldChange = (result: BiliSearchResult[]) => {
-    setSearchResult(result)
   }
 
   useEffect(() => {
     if (debouncedSearchField) {
-      getBiliVideoSearch({
+      handleSearchPreviewResults({
         keyword: debouncedSearchField,
       })
-        .then((res) => {
-          console.log(res)
-          handleSearchFieldChange(res.data.result || [])
-        })
-        .catch((err) => {
-          console.log(err)
-          handleSearchFieldChange([])
-        })
     }
-  }, [debouncedSearchField])
+  }, [debouncedSearchField, handleSearchPreviewResults, setIsShow])
 
   return (
     <div className={`${className ?? ""} flex space-x-2 ${BMSearchClasses["bili-music-search"]}`}>
@@ -61,12 +49,13 @@ const BMSearch = ({ className }: MergeWithDefaultProps) => {
           }}
           onChange={(e) => {
             setSearchField(e.target.value)
+            setIsShow(true)
           }}
         />
         {isShow && (
           <BMSearchPreview
             ref={previewRef}
-            data={searchResult}
+            data={searchPreviewResults}
             onClick={handleSearch}
             className={`${BMSearchClasses["search-preview"]}`}
           />

@@ -35,9 +35,10 @@ export const getBiliVideoInfo = (params: BiliVideoInfoReq) => {
   })
 }
 
-interface BiliVideoSearchReq {
+export interface BiliVideoSearchReq {
   keyword: string
-  order?: string | "totalrank" | "click" | "pubdate" // 排序方式, 默认为 totalrank, 可选值为 totalrank, click, pubdate, dm, stow
+  // 排序方式, 默认为 totalrank, 可选值为 totalrank, click, pubdate, dm, stow
+  order?: string
   page?: number
 }
 

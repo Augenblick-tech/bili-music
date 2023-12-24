@@ -5,41 +5,45 @@
 @tailwind utilities;
 
 :root {
-  --footerHeight: 5rem;
-  --headerHeight: 2rem;
+  --footer-height: 5rem;
+  --header-height: 2rem;
   --bgColor: rgb(247, 249, 252);
-  --panelMargin: 0.5rem;
+  --main-margin: 0.5rem;
   --safe-area-height: 1.5rem;
   --window-control-height: 1.5px;
 }
 
 @layer components {
-	.scrollbar {
-		@apply overflow-y-auto overflow-hidden;
-		@apply [&::-webkit-scrollbar-thumb]:bg-transparent [&:hover::-webkit-scrollbar-thumb]:bg-[#bcbcbc];
-	}
+  .scrollbar {
+    @apply overflow-y-auto overflow-hidden m-[--main-margin];
+    @apply [&::-webkit-scrollbar-thumb]:bg-transparent [&:hover::-webkit-scrollbar-thumb]:bg-[#bcbcbc];
+  }
 
-	.scrollbar::-webkit-scrollbar {
-		width: 4px;
-	}
+  .scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
 
-	.scrollbar::-webkit-scrollbar-button {
-		background-color: transparent;
-		height: var(--panelMargin);
-		@apply [&:vertical:decrement]:h-[0] [&:vertical:increment]:h-[calc(var(--footerHeight)+var(--panelMargin))];
-	}
+  .scrollbar::-webkit-scrollbar-button {
+    background-color: transparent;
+    height: var(--main-margin);
+    @apply [&:vertical:decrement]:h-[0] [&:vertical:increment]:h-[calc(var(--footer-height)+var(--main-margin))];
+  }
 
-	.scrollbar::-webkit-scrollbar-thumb {
-		border-radius: 5px;
-		margin-right: 2px;
-		@apply [&:hover]:bg-[#a0a0a0];
-	}
+  .scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    margin-right: 2px;
+    @apply [&:hover]:bg-[#a0a0a0];
+  }
 
-	.bm-panel {
-		@apply m-[--panelMargin] mt-0 h-[calc(100%-var(--headerHeight)-var(--safe-area-height)*2)] pb-[--footerHeight] scrollbar;
-	}
+  .main-height {
+    height: calc(100% - var(--header-height) - var(--safe-area-height) * 2);
+  }
 
-	.electron-drag {
-		-webkit-app-region: drag;
-	}
+  .padding-footer {
+    padding-bottom: var(--footer-height);
+  }
+
+  .electron-drag {
+    -webkit-app-region: drag;
+  }
 }
