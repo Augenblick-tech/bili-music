@@ -7,7 +7,7 @@
 :root {
   --footer-height: 5rem;
   --header-height: 2rem;
-  --bgColor: rgb(247, 249, 252);
+  --bg-color: rgb(247, 249, 252);
   --main-margin: 0.5rem;
   --safe-area-height: 1.5rem;
   --window-control-height: 1.5px;
