@@ -11,53 +11,35 @@ import {
   tableCellClasses,
 } from "@mui/material"
 import { FaRegCirclePlay } from "react-icons/fa6"
-import { getBiliVideoSearch } from "@/api/BiliVideo"
 import useInfiniteScroll from "@/hooks/useInfiniteScroll"
 import { formatPlayCount, formatTime } from "@/utils/videoUtils"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
-import type { BiliSearchResult } from "@/types/bili/BiliSearch"
+import { useAtom } from "jotai"
+import { handleSearchResultsAtom, nextSearchResultsAtom } from "@/stores/BiliSearch/BiliSearch"
+import { useScrollToTop } from "@/hooks/useScrollToTop"
 
 const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
   const [params] = useSearchParams()
-  const [searchResult, setSearchResult] = useState<BiliSearchResult[]>()
-  const [sort, setSort] = useState<"comprehensive" | "mostPlayed" | "latest">("comprehensive")
+  const [searchResult, handleSearchResult] = useAtom(handleSearchResultsAtom)
+  const [, nextSearchResult] = useAtom(nextSearchResultsAtom)
+  const [order, setOrder] = useState<"totalrank" | "click" | "pubdate">("totalrank")
+  const [containerRef, scrollToTop] = useScrollToTop<HTMLDivElement>()
 
   const keyword = params.get("keyword") || ""
 
   useEffect(() => {
-    getBiliVideoSearch({
+    handleSearchResult({
       keyword,
+      order,
     })
-      .then((res) => {
-        console.log(res)
-        const result = res.data.result.filter((item) => item.type === "video")
-        setSearchResult(result || [])
-      })
-      .catch((err) => {
-        console.log(err)
-        setSearchResult([])
-      })
-  }, [keyword])
+    scrollToTop()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyword, order])
 
-  const [sentinel, hasMore] = useInfiniteScroll<HTMLTableRowElement>(async (page: number) => {
-    return getBiliVideoSearch({
+  const [sentinel, hasMore] = useInfiniteScroll<HTMLTableRowElement>(async () => {
+    return nextSearchResult({
       keyword,
-      page,
-      order: sort,
-    }).then((res) => {
-      console.log(res)
-      setSearchResult((prev) => {
-        if (!prev) return res.data.result
-        const prevResult = prev
-        const newResult = res.data.result?.filter((item) => {
-          return !prevResult.some((prevItem) => item.type === "video" && prevItem.id === item.id)
-        })
-        return prevResult.concat(newResult || [])
-      })
-      return {
-        hasMore: res.data.numPages > 0 && res.data.page < 50,
-        nextPage: res.data.page + 1,
-      }
+      order,
     })
   })
 
@@ -90,7 +72,7 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
   }
 
   return (
-    <div className={className ?? ""}>
+    <div className={`${className ?? ""} scrollbar h-full padding-footer`} ref={containerRef}>
       <div className="title mb-2">
         <span>
           <span className="keyword mr-2 font-bold text-2xl">{params.get("keyword")}</span>
@@ -98,13 +80,13 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
         </span>
       </div>
       <div className="sort mb-2 flex space-x-2">
-        <SortButton selected={sort === "comprehensive"} onClick={() => setSort("comprehensive")}>
+        <SortButton selected={order === "totalrank"} onClick={() => setOrder("totalrank")}>
           综合排序
         </SortButton>
-        <SortButton selected={sort === "mostPlayed"} onClick={() => setSort("mostPlayed")}>
+        <SortButton selected={order === "click"} onClick={() => setOrder("click")}>
           最多播放
         </SortButton>
-        <SortButton selected={sort === "latest"} onClick={() => setSort("latest")}>
+        <SortButton selected={order === "pubdate"} onClick={() => setOrder("pubdate")}>
           最新发布
         </SortButton>
       </div>
@@ -193,7 +175,7 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
                 <TableCell align="center">{item.author}</TableCell>
                 <TableCell align="center">{formatPlayCount(item.play)}</TableCell>
                 <TableCell className="flex-shrink-0" align="center">
-                  {item.pubdate ? formatTime(item.pubdate) : "未知"}
+                  {item.pubdate ? formatTime(item.pubdate * 1000) : "未知"}
                 </TableCell>
               </TableRow>
             ))}
