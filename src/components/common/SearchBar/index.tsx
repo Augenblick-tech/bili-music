@@ -4,15 +4,15 @@ import { CiSearch } from "react-icons/ci"
 import { useNavigate } from "react-router-dom"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import useDebounce from "@/hooks/useDebounce"
-import BMSearchPreview from "./BMSearchPreview"
-import BMSearchClasses from "./BMSearch.module.css"
+import BMSearchPreview from "./SearchPreview"
+import BMSearchClasses from "./SearchBar.module.css"
 import useOutsideClick from "@/hooks/useOutsideClick"
 import { useAtom } from "jotai"
-import { handleSearcuResultsAtom } from "@/stores/BiliSearch"
+import { handleSearchPreviewResultsAtom } from "@/stores/BiliSearch/BiliSearch"
 
 const BMSearch = ({ className }: MergeWithDefaultProps) => {
   const [searchField, setSearchField] = useState("")
-  const [searchResult, handleSearchResult] = useAtom(handleSearcuResultsAtom)
+  const [searchPreviewResults, handleSearchPreviewResults] = useAtom(handleSearchPreviewResultsAtom)
   const navigate = useNavigate()
   const inputRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
@@ -22,16 +22,17 @@ const BMSearch = ({ className }: MergeWithDefaultProps) => {
   const handleSearch = (keyword: string) => {
     if (!keyword) return
     setIsShow(false)
+    setSearchField(keyword)
     navigate(`/search?keyword=${keyword}`)
   }
 
   useEffect(() => {
     if (debouncedSearchField) {
-      handleSearchResult({
+      handleSearchPreviewResults({
         keyword: debouncedSearchField,
       })
     }
-  }, [debouncedSearchField, handleSearchResult])
+  }, [debouncedSearchField, handleSearchPreviewResults, setIsShow])
 
   return (
     <div className={`${className ?? ""} flex space-x-2 ${BMSearchClasses["bili-music-search"]}`}>
@@ -48,12 +49,13 @@ const BMSearch = ({ className }: MergeWithDefaultProps) => {
           }}
           onChange={(e) => {
             setSearchField(e.target.value)
+            setIsShow(true)
           }}
         />
         {isShow && (
           <BMSearchPreview
             ref={previewRef}
-            data={searchResult}
+            data={searchPreviewResults}
             onClick={handleSearch}
             className={`${BMSearchClasses["search-preview"]}`}
           />

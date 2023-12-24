@@ -5,8 +5,8 @@ import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 const BMMain = ({ className }: MergeWithDefaultProps) => {
   return (
     <div className={className ?? ""}>
-      <BMHeader className="h-[--headerHeight]" />
-      <div className="bm-panel ml-[--safe-area-height]">
+      <BMHeader className="h-[--header-height]" />
+      <div className="main-height ml-[--safe-area-height]">
         <Outlet />
       </div>
     </div>

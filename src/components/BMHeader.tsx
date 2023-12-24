@@ -1,11 +1,11 @@
 import WindowControl from "@/components/common/WindowControl"
-import BMSearch from "@/components/common/BMSearch"
+import SearchBar from "@/components/common/SearchBar"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 
 const BMHeader = ({ className }: MergeWithDefaultProps) => {
   return (
     <div className={`${className ?? ""} flex m-[--safe-area-height] justify-between items-center select-none`}>
-      <BMSearch />
+      <SearchBar />
       <div className="left-side flex">
         <div className="user-info space-x-2">
           <button
