@@ -1,7 +1,3 @@
-import IconButton from "@mui/material/IconButton"
-import { MdPause, MdPlayArrow } from "react-icons/md"
-import { styled } from "@mui/material/styles"
-import Slider from "@mui/material/Slider"
 import { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { atom, useAtom } from "jotai"
 import {
@@ -12,7 +8,9 @@ import {
 } from "@/stores/MusicTrack/MusicTrack"
 import { PlayStatus } from "@/types/MusicPlayer"
 import { useEffect } from "react"
-import { Avatar } from "@mui/material"
+import { FaPlay } from "react-icons/fa6"
+import { FaPause } from "react-icons/fa6"
+import { ConfigProvider, Slider } from "antd"
 
 const progressAtom = atom(0)
 
@@ -21,15 +19,17 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   const [, handlePauseMusic] = useAtom(handlePauseMusicAtom)
 
   function formatDuration(value: number) {
-    const minute = Math.floor(value / 60)
-    const secondLeft = value - minute * 60
-    return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`
+    let minute = Math.floor(value / 60)
+    let secondLeft = value - minute * 60
+    return `${minute < 10 ? `0${minute}` : minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`
   }
 
   function PlayOrPauseButton() {
     const [musicPlayerState] = useAtom(musicPlayerStateAtom)
     return (
       <button
+        className="inline-flex items-center justify-center bg-gray-400/20 hover:bg-gray-400/30 active:scale-90 w-9 h-9 rounded-full"
+        aria-label={musicPlayerState?.playStatus == PlayStatus.playing ? "pause" : "play"}
         onClick={() => {
           if (musicPlayerState?.playStatus == PlayStatus.playing) {
             handlePauseMusic()
@@ -38,27 +38,23 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
           }
         }}
       >
-        {musicPlayerState?.playStatus == PlayStatus.playing ? (
-          <IconButton aria-label="pause">
-            <MdPause />
-          </IconButton>
-        ) : (
-          <IconButton aria-label="play">
-            <MdPlayArrow />
-          </IconButton>
-        )}
+        {musicPlayerState?.playStatus == PlayStatus.playing ? <FaPause /> : <FaPlay />}
       </button>
     )
   }
 
   function CoverImage() {
     const [musicPlayerState] = useAtom(musicPlayerStateAtom)
-    return musicPlayerState?.cover ? <Avatar variant="rounded" src={musicPlayerState?.cover}></Avatar> : <div></div>
+    return musicPlayerState?.cover ? (
+      <img aria-label="cover" className="rounded-md w-12 h-12 object-cover" src={musicPlayerState?.cover}></img>
+    ) : (
+      <div></div>
+    )
   }
 
   function TitleLabel() {
     const [musicPlayerState] = useAtom(musicPlayerStateAtom)
-    return <div className="name">{musicPlayerState?.title}</div>
+    return <div className="text-sm ml-2 line-clamp-2">{musicPlayerState?.title}</div>
   }
 
   function CurrentTimeLabel() {
@@ -83,79 +79,61 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
     const [musicPlayerState] = useAtom(musicPlayerStateAtom)
     const [progress, setProgress] = useAtom(progressAtom)
     const [, handleJumpMusicProgress] = useAtom(handleJumpMusicProgressAtom)
-    // 是否按下了鼠标（未松开）
-    let isMouseDown = false
 
     useEffect(() => {
-      if (!isMouseDown) setProgress((musicPlayerState?.progress ?? 0) * 100)
+      setProgress((musicPlayerState?.progress ?? 0) * 100)
     }, [musicPlayerState])
 
     return (
-      <AirbnbSlider
-        aria-label="Temperature"
-        defaultValue={0}
-        value={progress}
-        onChange={(_: Event, newValue: number | number[]) => {
-          setProgress(newValue as number)
+      <ConfigProvider
+        theme={{
+          components: {
+            Slider: {
+              handleLineWidthHover: 2,
+              railBg: "rgba(150, 150, 150, 0.3)",
+            },
+          },
+          token: {
+            colorPrimary: "rgb(255, 19,   103)",
+          },
         }}
-        onMouseDown={(_) => {
-          isMouseDown = true
-        }}
-        onMouseUp={(_) => {
-          isMouseDown = false
-          handleJumpMusicProgress(progress / 100)
-        }}
-      />
+      >
+        <Slider
+          className="w-full mx-2"
+          aria-label="progess"
+          defaultValue={0}
+          value={progress}
+          onChange={(value: number | number[]) => {
+            setProgress(value as number)
+          }}
+          onChangeComplete={(value) => {
+            handleJumpMusicProgress(value / 100)
+          }}
+        />
+      </ConfigProvider>
     )
   }
 
-  const AirbnbSlider = styled(Slider)(({ theme }) => ({
-    color: "#FC344F",
-    height: 3,
-    padding: "13px 0",
-    "& .MuiSlider-thumb": {
-      height: 16,
-      width: 16,
-      backgroundColor: "#fff",
-      border: "1px solid currentColor",
-      "&:hover": {
-        boxShadow: "0 0 0 8px rgba(58, 133, 137, 0.16)",
-      },
-      "& .airbnb-bar": {
-        height: 9,
-        width: 1,
-        backgroundColor: "currentColor",
-        marginLeft: 1,
-        marginRight: 1,
-      },
-    },
-    "& .MuiSlider-track": {
-      height: 3,
-    },
-    "& .MuiSlider-rail": {
-      color: theme.palette.mode === "dark" ? "#bfbfbf" : "#d8d8d8",
-      opacity: theme.palette.mode === "dark" ? undefined : 1,
-      height: 3,
-    },
-  }))
-
   return (
     <div className={`${className}`}>
-      <main className="flex justify-between relative">
-        <div className="song-info flex-1">
+      <div className="h-full flex justify-between items-center relative px-5">
+        <div className="simple-meta flex-[30%] flex items-center">
           <CoverImage />
           <TitleLabel />
         </div>
-        <div className="control flex-1">
-          <CurrentTimeLabel />
-          <PlayOrPauseButton />
-          <EndingTimeLabel />
-          <ProgressSlider />
+        <div className="control flex-[50%] justify-center pl-5 pr-5 text-slate-700">
+          <div className="control-buttons flex justify-center items-center pt-2">
+            <PlayOrPauseButton />
+          </div>
+          <div className="control-timer flex justify-center items-center">
+            <CurrentTimeLabel />
+            <ProgressSlider />
+            <EndingTimeLabel />
+          </div>
         </div>
-        <div className="function flex-1">
-          <button>function</button>
+        <div className="function flex-[30%]">
         </div>
-      </main>
+      </div>
     </div>
   )
 }
