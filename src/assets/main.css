@@ -4,13 +4,21 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --footer-height: 5rem;
-  --header-height: 2rem;
-  --bg-color: rgb(247, 249, 252);
-  --main-margin: 0.5rem;
-  --safe-area-height: 1.5rem;
-  --window-control-height: 1.5px;
+@layer base {
+  /* global */
+  html {
+    --footer-height: 5rem;
+    --header-height: 2rem;
+    --main-margin: 0.5rem;
+    --safe-area-height: 1.5rem;
+    --window-control-height: 1.5px;
+  }
+
+  html[data-theme="default"] {
+    --bg-color: 247, 249, 252;
+    --color-primary: 252, 61, 73;
+    --color-secondary: 255, 19, 103;
+  }
 }
 
 @layer components {
@@ -45,5 +53,9 @@
 
   .electron-drag {
     -webkit-app-region: drag;
+  }
+
+  .bg-menu-selected {
+    @apply bg-[linear-gradient(90deg,rgb(var(--color-secondary)),rgb(var(--color-primary)))];
   }
 }
