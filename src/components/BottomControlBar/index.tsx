@@ -11,8 +11,10 @@ import { useEffect } from "react"
 import { FaPlay } from "react-icons/fa6"
 import { FaPause } from "react-icons/fa6"
 import { ConfigProvider, Slider } from "antd"
+import PlayListDrawer from "../PlayList/PlayListDrawer"
 
 const progressAtom = atom(0)
+const playListDrawerOpenAtom = atom(false)
 
 const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
@@ -114,6 +116,16 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
     )
   }
 
+  function PlayListButton() {
+    const [playListDrawerOpen, setPlayListDrawerOpen] = useAtom(playListDrawerOpenAtom)
+    return (
+      <div>
+        <button onClick={() =>setPlayListDrawerOpen(true)}>播放列表</button>
+        <PlayListDrawer open={playListDrawerOpen} onClose={() =>setPlayListDrawerOpen(false)} />
+      </div>
+    )
+  }
+
   return (
     <div className={`${className}`}>
       <div className="h-full flex justify-between items-center relative px-5">
@@ -132,6 +144,7 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
           </div>
         </div>
         <div className="function flex-[30%]">
+          <PlayListButton />
         </div>
       </div>
     </div>

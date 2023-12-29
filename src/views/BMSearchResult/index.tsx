@@ -19,6 +19,7 @@ import { useAtom } from "jotai"
 import { handleSearchResultsAtom, nextSearchResultsAtom } from "@/stores/BiliSearch/BiliSearch"
 import { changeMusicFromBliVideoAtom, handlePlayMusicAtom, musicPlayerStateAtom } from "@/stores/MusicTrack/MusicTrack"
 import { useScrollToTop } from "@/hooks/useScrollToTop"
+import { replacePlayMusicListAtom } from "@/stores/MusicTrack/MusicPlayList"
 
 const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
   const [params] = useSearchParams()
@@ -30,6 +31,7 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
   const [musicPlayerState] = useAtom(musicPlayerStateAtom)
   const [, changeMusicFromBliVideo] = useAtom(changeMusicFromBliVideoAtom)
   const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
+  const [, replacePlayMusicList] = useAtom(replacePlayMusicListAtom)
 
   const keyword = params.get("keyword") || ""
 
@@ -175,6 +177,18 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
                               })
                               changeMusicFromBliVideo(info.data, media.data)
                               handlePlayMusic()
+                              replacePlayMusicList(
+                                searchResult.map((v, i) => {
+                                  return {
+                                    url: "",
+                                    duration: 0,
+                                    title: v.title,
+                                    cover: "",
+                                    biliInfo: info.data,
+                                    biliUrl: media.data,
+                                  }
+                                })
+                              )
                               console.log(musicPlayerState)
                             } catch (error) {
                               console.error(error)
