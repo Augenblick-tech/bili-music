@@ -1,6 +1,7 @@
 import { PlayListItem } from "@/types/MusicPlayList"
 import { atom, useAtom } from "jotai"
-import { changeMusicFromBliVideoAtom } from "./MusicTrack"
+import { changeMusicFromBliVideoAtom, handlePlayMusicAtom, musicPlayerStateAtom } from "./MusicTrack"
+import { getBiliVideoInfo, getBiliVideoURL } from "@/api/BiliVideo"
 
 /**
  * 全局音乐播放列表
@@ -33,4 +34,34 @@ const replacePlayMusicListAtom = atom(null, (get, set, newPlayList: PlayListItem
   set(_musicPlayListAtom, newPlayList)
 })
 
-export { musicPlayListAtom, handlePlayMusicListItemAtom, addPlayMusicListAtom, replacePlayMusicListAtom }
+/**
+ * 播放下一首
+ */
+const handlePlayNextMusicAtom = atom(null, (get, set) => {
+  const current = get(musicPlayerStateAtom)
+  const list = get(_musicPlayListAtom)
+  const findIndex = list.findIndex((v) => v.bvid == current?.biliInfo?.bvid)
+  const nextIndex = findIndex + 1
+  getBiliVideoData(list[nextIndex].bvid).then((data) => {
+    set(changeMusicFromBliVideoAtom, data.info.data, data.media.data)
+    set(handlePlayMusicAtom)
+  })
+})
+
+async function getBiliVideoData(bvid: string) {
+  const info = await getBiliVideoInfo({ bvid: bvid })
+  const media = await getBiliVideoURL({
+    bvid: bvid,
+    cid: info.data?.cid!,
+    fnval: 16,
+  })
+  return { info, media }
+}
+
+export {
+  musicPlayListAtom,
+  handlePlayMusicListItemAtom,
+  addPlayMusicListAtom,
+  replacePlayMusicListAtom,
+  handlePlayNextMusicAtom,
+}

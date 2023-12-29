@@ -4,6 +4,7 @@ import { BiliVideoInfo, BiliVideoURL } from "./bili/BiliVideo"
  * 播放列表项
  */
 export interface PlayListItem {
+  bvid: string
   /** 音轨链接 */
   url: string
   /** 完整时长 */

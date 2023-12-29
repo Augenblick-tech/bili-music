@@ -20,6 +20,7 @@ import { handleSearchResultsAtom, nextSearchResultsAtom } from "@/stores/BiliSea
 import { changeMusicFromBliVideoAtom, handlePlayMusicAtom, musicPlayerStateAtom } from "@/stores/MusicTrack/MusicTrack"
 import { useScrollToTop } from "@/hooks/useScrollToTop"
 import { replacePlayMusicListAtom } from "@/stores/MusicTrack/MusicPlayList"
+import { removeHTMLTags } from "@/utils/htmlUtil"
 
 const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
   const [params] = useSearchParams()
@@ -178,14 +179,13 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
                               changeMusicFromBliVideo(info.data, media.data)
                               handlePlayMusic()
                               replacePlayMusicList(
-                                searchResult.map((v, i) => {
+                                searchResult.map((v, _) => {
                                   return {
-                                    url: "",
-                                    duration: 0,
-                                    title: v.title,
-                                    cover: "",
-                                    biliInfo: info.data,
-                                    biliUrl: media.data,
+                                    bvid: v.bvid,
+                                    url: media.data.dash.audio[0].baseUrl,
+                                    duration: info.data.pages[0].duration,
+                                    title: removeHTMLTags(v.title),
+                                    cover: v.pic,
                                   }
                                 })
                               )
