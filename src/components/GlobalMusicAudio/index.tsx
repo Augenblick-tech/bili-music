@@ -1,3 +1,4 @@
+import { handlePlayNextMusicAtom } from "@/stores/MusicTrack/MusicPlayList"
 import { handleUpdateMusicProgressAtom, musicPlayerStateAtom } from "@/stores/MusicTrack/MusicTrack"
 import { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { PlayStatus } from "@/types/MusicPlayer"
@@ -13,6 +14,7 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const [, handleUpdateMusicProgress] = useAtom(handleUpdateMusicProgressAtom)
+  const [, handlePlayNextMusic] = useAtom(handlePlayNextMusicAtom)
 
   useEffect(() => {
     if (!musicPlayerState) return
@@ -26,11 +28,17 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
 
   useEffect(() => {
     // 定期更新状态中的播放进度
-    let interval =  setInterval(() => {
+    let interval = setInterval(() => {
       if (!audioRef.current) return
       handleUpdateMusicProgress(audioRef.current.currentTime / audioRef.current.duration)
     }, 1000)
-    return () => clearInterval(interval)
+
+    audioRef.current?.addEventListener("ended", handlePlayNextMusic)
+
+    return () => {
+      clearInterval(interval)
+      audioRef.current?.removeEventListener("ended", handlePlayNextMusic)
+    }
   }, [])
 
   return <audio id="music_player_audio" className={className} src={musicPlayerState?.url} controls ref={audioRef} />
