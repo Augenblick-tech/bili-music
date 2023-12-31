@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 
-const useInfiniteScroll = <T extends HTMLElement>(loadMore: () => Promise<void>): [React.RefObject<T>, boolean] => {
+const useInfiniteScroll = <T extends HTMLElement>(
+  loadMore: () => Promise<void>,
+): [React.RefObject<T>, boolean, React.Dispatch<React.SetStateAction<boolean>>] => {
   const sentinel = useRef<T>(null)
   const isLoading = useRef(false)
   const [hasMore, setHasMore] = useState(true)
@@ -36,7 +38,7 @@ const useInfiniteScroll = <T extends HTMLElement>(loadMore: () => Promise<void>)
     }
   }, [hasMore, loadMore])
 
-  return [sentinel, hasMore]
+  return [sentinel, hasMore, setHasMore]
 }
 
 export default useInfiniteScroll

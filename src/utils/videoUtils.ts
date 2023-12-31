@@ -25,3 +25,15 @@ type ValidTimestamp = string | number
 const isValidTimestamp = (timestamp: number | string): timestamp is ValidTimestamp => {
   return new Date(+timestamp).getTime() > 0
 }
+
+export const formatDuration = (duration: number) => {
+  const hours = Math.floor(duration / 3600)
+  const minutes = Math.floor((duration % 3600) / 60)
+  const seconds = duration % 60
+
+  const formattedHours = hours > 0 ? `${hours}:` : ""
+  const formattedMinutes = hours > 0 ? `${minutes.toString().padStart(2, "0")}:` : `${minutes}:`
+  const formattedSeconds = seconds.toString().padStart(2, "0")
+
+  return `${formattedHours}${formattedMinutes}${formattedSeconds}`
+}
