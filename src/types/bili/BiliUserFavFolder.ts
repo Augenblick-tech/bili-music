@@ -68,6 +68,7 @@ type Upper = {
   mid: number
   /** 创建人名称 */
   name: string
+  /** 创建人头像 */
   face: string
 }
 
@@ -125,6 +126,19 @@ type FolderCntInfo = {
 }
 
 /**
+ * 收藏夹内容明细列表
+ */
+export type FavFolderDetailList = {
+  /** 收藏夹元数据 */
+  info: FavFolderInfo
+  /** 收藏夹内容列表 */
+  medias: FavFolderListItem[]
+  /** 是否有下一页 */
+  has_more: boolean
+  ttl: number
+}
+
+/**
  * 收藏夹全部内容
  */
 export type FavFolderListItem = {
@@ -132,6 +146,26 @@ export type FavFolderListItem = {
   id: number
   /** 内容类型, 2 为视频稿件, 12 为音频, 21 为视频合集 */
   type: number
+  /** 标题 */
+  title: string
+  /** 封面 */
+  cover: string
+  /** 简介 */
+  intro: string
+  /** 视频分P数	*/
+  page: number
+  /** 视频时长 */
+  duration: number
+  /** up主信息 */
+  upper: Upper
+  /** 状态数 */
+  cnt_info: FolderCntInfo
+  /** 投稿时间 */
+  ctime: number
+  /** 发布时间 */
+  pubtime: number
+  /** 收藏时间 */
+  fav_time: number
   /** 视频稿件 bvid */
   bv_id: string
   /** 视频稿件 bvid */

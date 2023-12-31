@@ -1,8 +1,8 @@
-import {
+import type {
   UserCreatedFavFolder,
   UserCollectedFavFolder,
   FavFolderInfo,
-  FavFolderListItem,
+  FavFolderDetailList,
 } from "@/types/bili/BiliUserFavFolder"
 import { request } from "./axios"
 
@@ -62,12 +62,25 @@ export const getFavFolderInfo = (params: {
 export const getFavFolderList = (params: {
   /** 目标收藏夹id（完整id） */
   media_id: number
+  /**
+   * 排序方式, 按收藏时间:mtime
+   * 按播放量: view
+   * 按投稿时间：pubtime
+   */
+  order?: "mtime" | "view" | "pubtime"
+  /** 每页项数, 1-20 */
+  ps: number
+  /** 页码，从 1 开始 */
+  pn?: number
   /** 平台标识 */
-  platform?: "web"
+  // platform?: "web"
 }) => {
-  return request<FavFolderListItem[] | null>({
+  return request<FavFolderDetailList>({
     url: "/x/v3/fav/resource/list",
     method: "GET",
-    params,
+    params: {
+      ...params,
+      platform: "web",
+    },
   })
 }
