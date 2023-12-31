@@ -35,7 +35,7 @@ const PlayListDrawer = ({ className, open, onClose }: MergeWithDefaultProps<Prop
                 const info = await getBiliVideoInfo({ bvid: item.bvid })
                 const media = await getBiliVideoURL({
                   bvid: item.bvid,
-                  cid: info.data?.cid!,
+                  cid: info.data?.cid,
                   fnval: 16,
                 })
                 changeMusicFromBliVideo(info.data, media.data)
