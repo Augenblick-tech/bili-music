@@ -1,12 +1,12 @@
-import { useRef } from "react"
+import { useCallback, useRef } from "react"
 
 export const useScrollToTop = <T extends HTMLElement>(options?: ScrollToOptions): [React.RefObject<T>, () => void] => {
   const elementRef = useRef<T>(null)
-  const scrollToTop = () => {
+  const scrollToTop = useCallback(() => {
     elementRef.current?.scrollTo({
       top: 0,
       ...options,
     })
-  }
-  return [elementRef, scrollToTop] as const
+  }, [options])
+  return [elementRef, scrollToTop]
 }
