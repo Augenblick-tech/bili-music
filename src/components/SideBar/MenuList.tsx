@@ -16,11 +16,12 @@ const MenuList = ({ className }: MergeWithDefaultProps) => {
 
   return (
     <Menu
-      className={`${className ?? ""} bg-transparent text-[0.8125rem] px-2
-       ${"[&_.ant-menu-item-selected]:bg-menu-selected [&_.ant-menu-item-selected]:text-white"}
-       ${"[&_.ant-menu.ant-menu-sub.ant-menu-inline]:bg-transparent"}
-       ${"[&_.ant-menu-item.ant-menu-item-only-child]:py-1"}
-       `}
+      className={`${className ?? ""}
+        bg-transparent text-[0.8125rem] px-2
+        [&_.ant-menu-item-selected]:bg-menu-selected [&_.ant-menu-item-selected]:text-white
+        [&_.ant-menu.ant-menu-sub.ant-menu-inline]:bg-transparent
+        [&_.ant-menu-item.ant-menu-item-only-child]:py-1
+      `}
       style={{
         borderInlineEnd: "none",
       }}
@@ -31,9 +32,6 @@ const MenuList = ({ className }: MergeWithDefaultProps) => {
         console.log({ key, keyPath, domEvent })
         const path = keyPath.reverse().join("/")
         navigate(path)
-      }}
-      onOpenChange={(openKeys) => {
-        console.log(openKeys)
       }}
       items={items}
     />

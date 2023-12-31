@@ -3,7 +3,7 @@ import App from "@/App"
 import { Suspense, lazy } from "react"
 
 const BMSearchResult = lazy(() => import("@/views/BMSearchResult"))
-const SideBarMusicPlaylist = lazy(() => import("@/views/SideBarMusicPlaylist"))
+const SideBarMusicPlaylist = lazy(() => import("@/views/UserFavFolder"))
 
 const router = createHashRouter([
   {

@@ -3,7 +3,7 @@ import type { WritableAtom } from "jotai"
 import {
   handleUserCreatedFolderAtom,
   handleUserCollectedFolderAtom,
-} from "@/stores/SideBarMusicPlaylist/SideBarMusicPlaylist"
+} from "@/stores/UserFavFolder/UserFavFolder"
 import { useEffect, useState } from "react"
 import type { MenuProps } from "antd"
 import { getFavFolderInfo } from "@/api/BiliUserFavFolder"
@@ -71,25 +71,21 @@ const useFetchItems = <T extends UserFavFolderItem>(
 }
 
 const useMenuList = (getIconNode: (url: string) => React.ReactNode) => {
-  const [items, setItems] = useState<MenuProps["items"]>([getItem("首页", "home"), { type: "divider" }])
   const userCreatedItems = useFetchItems(handleUserCreatedFolderAtom, getIconNode)
   const userCollectedItems = useFetchItems(handleUserCollectedFolderAtom, getIconNode)
+  const [items, setItems] = useState<MenuProps["items"]>([])
 
   useEffect(() => {
-    console.log("useMenuList")
     setItems((prev) => {
       if (!prev) return []
 
-      const newItems = [...prev]
-      if (userCreatedItems && !prev.some((item) => item && item.key === "folder-created")) {
-        newItems.push(getItem("创建的歌单", "folder-created", undefined, userCreatedItems), {
-          type: "divider",
-        })
-      }
-
-      if (userCollectedItems && !prev.some((item) => item && item.key === "folder-collected")) {
-        newItems.push(getItem("收藏的歌单", "folder-collected", undefined, userCollectedItems))
-      }
+      const newItems: MenuItem[] = [
+        getItem("首页", "home"),
+        { type: "divider" },
+        getItem("创建的歌单", "folder-created", undefined, userCreatedItems),
+        { type: "divider" },
+        getItem("收藏的歌单", "folder-collected", undefined, userCollectedItems),
+      ]
 
       return newItems
     })
