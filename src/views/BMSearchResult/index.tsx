@@ -13,7 +13,7 @@ import {
 import { FaRegCirclePlay } from "react-icons/fa6"
 import { getBiliVideoInfo, getBiliVideoURL } from "@/api/BiliVideo"
 import useInfiniteScroll from "@/hooks/useInfiniteScroll"
-import { formatPlayCount, formatTime } from "@/utils/videoUtils"
+import { addProtocolToUrl, formatPlayCount, formatTime } from "@/utils/videoUtils"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { useAtom } from "jotai"
 import { handleSearchResultsAtom, nextSearchResultsAtom } from "@/stores/BiliSearch/BiliSearch"
@@ -173,13 +173,13 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
                               const info = await getBiliVideoInfo({ bvid: item.bvid })
                               const media = await getBiliVideoURL({
                                 bvid: item.bvid,
-                                cid: info.data?.cid!,
+                                cid: info.data?.cid,
                                 fnval: 16,
                               })
                               changeMusicFromBliVideo(info.data, media.data)
                               handlePlayMusic()
                               replacePlayMusicList(
-                                searchResult.map((v, _) => {
+                                searchResult.map((v) => {
                                   return {
                                     bvid: v.bvid,
                                     url: media.data.dash.audio[0].baseUrl,
@@ -187,7 +187,7 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
                                     title: removeHTMLTags(v.title),
                                     cover: v.pic,
                                   }
-                                })
+                                }),
                               )
                               console.log(musicPlayerState)
                             } catch (error) {
@@ -197,7 +197,7 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
                           className="text-white cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl"
                         />
                       </div>
-                      <img src={item.pic} className="h-full w-full object-cover" alt="" />
+                      <img src={addProtocolToUrl(item.pic)} className="h-full w-full object-cover" alt="" />
                     </div>
                     <span
                       className="[&>.keyword]:text-red-500 [&>em]:[font-style:normal]"

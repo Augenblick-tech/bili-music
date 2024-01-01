@@ -12,7 +12,7 @@ const musicPlayListAtom = atom((get) => get(_musicPlayListAtom))
 /**
  * 播放播放列表指定音乐
  */
-const handlePlayMusicListItemAtom = atom(null, (get, set, playListItem: PlayListItem) => {
+const handlePlayMusicListItemAtom = atom(null, (_get, _set, playListItem: PlayListItem) => {
   const [, changeMusicFromBliVideo] = useAtom(changeMusicFromBliVideoAtom)
   if (!playListItem.biliInfo) return
   if (!playListItem.biliUrl) return
@@ -30,7 +30,7 @@ const addPlayMusicListAtom = atom(null, (get, set, newPlayList: PlayListItem[]) 
 /**
  * 替换播放列表
  */
-const replacePlayMusicListAtom = atom(null, (get, set, newPlayList: PlayListItem[]) => {
+const replacePlayMusicListAtom = atom(null, (_get, set, newPlayList: PlayListItem[]) => {
   set(_musicPlayListAtom, newPlayList)
 })
 
@@ -52,7 +52,7 @@ async function getBiliVideoData(bvid: string) {
   const info = await getBiliVideoInfo({ bvid: bvid })
   const media = await getBiliVideoURL({
     bvid: bvid,
-    cid: info.data?.cid!,
+    cid: info.data?.cid,
     fnval: 16,
   })
   return { info, media }

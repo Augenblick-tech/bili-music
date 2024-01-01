@@ -37,3 +37,10 @@ export const formatDuration = (duration: number) => {
 
   return `${formattedHours}${formattedMinutes}${formattedSeconds}`
 }
+
+export const addProtocolToUrl = (url: string, secure: boolean = false): string => {
+  if (url.startsWith("//")) {
+    return `${secure ? "https:" : "http:"}${url}`
+  }
+  return url
+}
