@@ -18,13 +18,20 @@
         target: "nsis",
         arch: ["x64"],
       },
+      {
+        target: "portable",
+        arch: ["x64"],
+      },
     ],
-    artifactName: "${productName}_${version}.${ext}",
   },
   nsis: {
     oneClick: false,
     perMachine: false,
     allowToChangeInstallationDirectory: true,
     deleteAppDataOnUninstall: false,
+    artifactName: "${productName}_setup_${version}.${ext}",
+  },
+  portable: {
+    artifactName: "${productName}_portable_${version}.${ext}",
   },
 }
