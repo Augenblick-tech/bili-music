@@ -1,9 +1,6 @@
 import { useAtom } from "jotai"
 import type { WritableAtom } from "jotai"
-import {
-  handleUserCreatedFolderAtom,
-  handleUserCollectedFolderAtom,
-} from "@/stores/UserFavFolder/UserFavFolder"
+import { handleUserCreatedFolderAtom, handleUserCollectedFolderAtom } from "@/stores/UserFavFolder/UserFavFolder"
 import { useEffect, useState } from "react"
 import type { MenuProps } from "antd"
 import { getFavFolderInfo } from "@/api/BiliUserFavFolder"

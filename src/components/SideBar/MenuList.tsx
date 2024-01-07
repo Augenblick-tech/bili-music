@@ -1,11 +1,12 @@
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { Menu } from "antd"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import useMenuList from "./useMenuList"
 import { useCallback } from "react"
 
 const MenuList = ({ className }: MergeWithDefaultProps) => {
   const navigate = useNavigate()
+  const location = useLocation()
   const items = useMenuList(
     useCallback((imgUrl) => {
       return <img src={imgUrl} className="w-6 h-6 object-cover rounded" loading="lazy" />
@@ -26,6 +27,7 @@ const MenuList = ({ className }: MergeWithDefaultProps) => {
         borderInlineEnd: "none",
       }}
       defaultSelectedKeys={[defaultPath]}
+      selectedKeys={[location.pathname.split("/").reverse()[0] ?? ""]}
       inlineIndent={12}
       mode="inline"
       onClick={({ key, keyPath, domEvent }) => {
