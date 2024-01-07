@@ -163,7 +163,7 @@ const UserFavFolder = ({ className }: MergeWithDefaultProps) => {
   }, [getFavFolderDetailList, id, scrollToTop])
 
   return (
-    <div className={`${className ?? ""} scrollbar h-full padding-footer`} ref={topRef}>
+    <div className={`${className ?? ""} scrollbar h-full`} ref={topRef}>
       <header className="flex mb-2">
         <div className="cover w-44 h-44 mr-8 rounded-xl overflow-hidden">
           <img className="h-full object-cover" src={favFolderDetailList?.data.info.cover} alt="" />

@@ -81,7 +81,7 @@ const BMSearchResult = ({ className }: MergeWithDefaultProps) => {
   }
 
   return (
-    <div className={`${className ?? ""} scrollbar h-full padding-footer`} ref={containerRef}>
+    <div className={`${className ?? ""} scrollbar h-full`} ref={containerRef}>
       <div className="title mb-2">
         <span>
           <span className="keyword mr-2 font-bold text-2xl">{params.get("keyword")}</span>

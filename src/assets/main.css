@@ -15,7 +15,10 @@
   }
 
   html[data-theme="default"] {
+    /* 全局背景颜色 */
     --bg-color: 247, 249, 252;
+    /* 侧边栏背景颜色 */
+    --sidebar-bg-color: 240, 243, 246;
     --color-primary: 252, 61, 73;
     --color-secondary: 255, 19, 103;
   }
@@ -34,7 +37,8 @@
   .scrollbar::-webkit-scrollbar-button {
     background-color: transparent;
     height: var(--main-margin);
-    @apply [&:vertical:decrement]:h-[0] [&:vertical:increment]:h-[calc(var(--footer-height)+var(--main-margin))];
+    /* @apply [&:vertical:decrement]:h-[0]; */
+    /* @apply [&:vertical:increment]:h-[calc(var(--footer-height)+var(--main-margin))]; */
   }
 
   .scrollbar::-webkit-scrollbar-thumb {
