@@ -117,6 +117,15 @@ async function createWindow() {
     })
   })
 
+  // Fix the problem of not being able to play local files
+  win.webContents.session.webRequest.onBeforeRequest((details, callback) => {
+    if (details.url.startsWith("file://") && details.url.includes("hdslb.com")) {
+      callback({ cancel: false, redirectURL: details.url.replace("file://", "http://") })
+    } else {
+      callback({ cancel: false })
+    }
+  })
+
   ipcMain.on("close", () => {
     win?.close()
   })
