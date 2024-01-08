@@ -2,17 +2,30 @@ import SideBar from "@/components/SideBar"
 import BMMain from "@/components/BMMain"
 import BottomControlBar from "@/components/BottomControlBar"
 import GlobalMusicAudio from "./components/GlobalMusicAudio"
-import { useAtom } from "jotai"
+import { useSetAtom } from "jotai"
 import { themeAtom } from "./stores/AppTheme"
 import { useEffect } from "react"
+import { useLocation } from "react-router-dom"
+import { locationAtom } from "./stores/location"
 
 function App() {
-  const [, setTheme] = useAtom(themeAtom)
+  const setTheme = useSetAtom(themeAtom)
+  const location = useLocation()
+  const setLoc = useSetAtom(locationAtom)
 
   useEffect(() => {
     const theme = "default"
     setTheme(theme)
   }, [setTheme])
+
+  useEffect(() => {
+    setLoc({
+      pathname: location.pathname,
+      search: location.search,
+      hash: location.hash,
+      searchParams: new URLSearchParams(location.search),
+    })
+  }, [location, setLoc])
 
   return (
     <div className="app relative h-screen rounded-lg bg-[rgb(var(--bg-color))] border overflow-hidden">
