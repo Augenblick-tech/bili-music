@@ -1,7 +1,21 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios"
 
+let _proxyUrl = ""
+if (window.electronAPI) {
+  _proxyUrl = ""
+} else {
+  const baseApiUrl = import.meta.env.VITE_APP_PROXY_API
+  if (baseApiUrl.endsWith("/")) {
+    _proxyUrl = baseApiUrl
+  } else if (baseApiUrl) {
+    _proxyUrl = baseApiUrl + "/"
+  }
+}
+
+export const proxyUrl = _proxyUrl
+
 const instance = axios.create({
-  baseURL: "https://api.bilibili.com",
+  baseURL: `${proxyUrl}https://api.bilibili.com`,
   timeout: 10000,
   withCredentials: true,
 })

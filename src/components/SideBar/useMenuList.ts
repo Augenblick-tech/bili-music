@@ -39,9 +39,18 @@ const useFetchItems = <T extends UserFavFolderItem>(
 
   useEffect(() => {
     const fetchUserCreatedFolder = async () => {
-      const electronCookies = await window.biliAuth.getCookies()
-      const userId = electronCookies.find((item) => item.name === "DedeUserID")?.value
-      if (!userId) return
+      let userId: string | undefined
+      try {
+        const electronCookies = await window.biliAuth.getCookies()
+        userId = electronCookies.find((item) => item.name === "DedeUserID")?.value
+        if (!userId) return
+      } catch (error) {
+        const err = error as Error
+        console.log(err.name)
+        const cookie = document.cookie
+        userId = cookie.match(/DedeUserID=(\d+)/)?.[1]
+        console.log(userId)
+      }
       await getUserFolder(Number(userId))
     }
     fetchUserCreatedFolder()

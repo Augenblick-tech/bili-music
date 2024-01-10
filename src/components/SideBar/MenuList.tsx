@@ -3,13 +3,14 @@ import { Menu } from "antd"
 import { useLocation, useNavigate } from "react-router-dom"
 import useMenuList from "./useMenuList"
 import { useCallback } from "react"
+import MusicImage from "@/components/common/MusicImage"
 
 const MenuList = ({ className }: MergeWithDefaultProps) => {
   const navigate = useNavigate()
   const location = useLocation()
   const items = useMenuList(
     useCallback((imgUrl) => {
-      return <img src={imgUrl} className="w-6 h-6 object-cover rounded" loading="lazy" />
+      return <MusicImage src={imgUrl} className="w-6 h-6 object-cover rounded" loading="lazy" />
     }, []),
   )
 

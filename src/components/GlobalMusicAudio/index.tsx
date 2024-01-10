@@ -4,6 +4,7 @@ import { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { PlayStatus } from "@/types/MusicPlayer"
 import { useAtom } from "jotai"
 import { useEffect, useRef } from "react"
+import { addProxyToUrl } from "@/utils/htmlUtil"
 
 /**
  * 全局音乐播放轨道，作为音乐播放器情景下的核心，在视图上隐藏不可见
@@ -41,7 +42,15 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
     }
   }, [])
 
-  return <audio id="music_player_audio" className={className} src={musicPlayerState?.url} controls ref={audioRef} />
+  return (
+    <audio
+      id="music_player_audio"
+      className={className}
+      src={addProxyToUrl(musicPlayerState?.url ?? "")}
+      controls
+      ref={audioRef}
+    />
+  )
 }
 
 export default GlobalMusicAudio

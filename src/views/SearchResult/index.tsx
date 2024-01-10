@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom"
 import { FaRegCirclePlay } from "react-icons/fa6"
 import { getBiliVideoInfo, getBiliVideoURL } from "@/api/BiliVideo"
 import useInfiniteScroll from "@/hooks/useInfiniteScroll"
-import { addProtocolToUrl, formatPlayCount, formatTime } from "@/utils/videoUtils"
+import { formatPlayCount, formatTime } from "@/utils/videoUtils"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { useAtom, useSetAtom } from "jotai"
 import { handleSearchResultsAtom, nextSearchResultsAtom } from "@/stores/BiliSearch/BiliSearch"
@@ -17,6 +17,7 @@ import type { BiliSearchResult } from "@/types/bili/BiliSearch"
 import Column from "antd/es/table/Column"
 import { PlayListItem } from "@/types/MusicPlayList"
 import MusicListTable from "@/components/common/MusicListTable"
+import MusicImage from "@/components/common/MusicImage"
 
 type OrderType = "totalrank" | "click" | "pubdate"
 
@@ -97,7 +98,7 @@ const SearchResult = ({ className }: MergeWithDefaultProps) => {
               return (
                 <div className="flex" ref={index === (searchResult?.length ?? 0) - 1 ? sentinel : null}>
                   <div className="flex items-center mr-2 w-16 h-16 flex-shrink-0 rounded-lg relative overflow-hidden">
-                    <img className="h-full w-full rounded object-cover" src={addProtocolToUrl(record.pic)} alt="" />
+                    <MusicImage className="h-full w-full rounded object-cover" src={record.pic} alt="" />
                     <div className="cover absolute t-0 l-0 h-full w-full hidden">
                       <FaRegCirclePlay
                         onClick={async () => {
