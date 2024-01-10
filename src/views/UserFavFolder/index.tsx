@@ -20,6 +20,7 @@ import type { PlayListItem } from "@/types/MusicPlayList"
 import InfiniteSpin from "@/components/common/InfiniteSpin"
 import useLoading from "@/hooks/useLoading"
 import MusicListTable from "@/components/common/MusicListTable"
+import MusicImage from "@/components/common/MusicImage"
 
 const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
   const { id } = useParams()
@@ -56,7 +57,7 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
             return (
               <div className="flex" ref={index === (items?.medias.length ?? 0) - 1 ? sentinel : null}>
                 <div className="flex items-center mr-2 w-12 h-12 relative overflow-hidden">
-                  <img className="h-full w-full rounded object-cover" src={record.cover} alt="" />
+                  <MusicImage className="h-full w-full rounded object-cover" src={record.cover} alt="" />
                   <div className="cover absolute t-0 l-0 h-full w-full rounded hidden">
                     <FaRegCirclePlay
                       onClick={async () => {
@@ -147,7 +148,7 @@ const UserFavFolder = ({ className }: MergeWithDefaultProps) => {
     <div className={`${className ?? ""} scrollbar h-full`} ref={topRef}>
       <header className="flex mb-2">
         <div className="cover w-44 h-44 mr-8 rounded-xl overflow-hidden">
-          <img className="h-full object-cover" src={favFolderDetailList?.data.info.cover} alt="" />
+          <MusicImage className="h-full object-cover" src={favFolderDetailList?.data.info.cover || ""} alt="" />
         </div>
         <div className="cover-info flex flex-col justify-between">
           <section>

@@ -12,6 +12,7 @@ import { FaPlay } from "react-icons/fa6"
 import { FaPause } from "react-icons/fa6"
 import { ConfigProvider, Slider } from "antd"
 import PlayListDrawer from "../PlayList/PlayListDrawer"
+import MusicImage from "@/components/common/MusicImage"
 
 const progressAtom = atom(0)
 const playListDrawerOpenAtom = atom(false)
@@ -48,7 +49,11 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   function CoverImage() {
     const [musicPlayerState] = useAtom(musicPlayerStateAtom)
     return musicPlayerState?.cover ? (
-      <img aria-label="cover" className="rounded-md w-12 h-12 object-cover" src={musicPlayerState?.cover}></img>
+      <MusicImage
+        aria-label="cover"
+        className="rounded-md w-12 h-12 object-cover"
+        src={musicPlayerState?.cover}
+      ></MusicImage>
     ) : (
       <div></div>
     )
@@ -120,8 +125,8 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
     const [playListDrawerOpen, setPlayListDrawerOpen] = useAtom(playListDrawerOpenAtom)
     return (
       <div>
-        <button onClick={() =>setPlayListDrawerOpen(true)}>播放列表</button>
-        <PlayListDrawer open={playListDrawerOpen} onClose={() =>setPlayListDrawerOpen(false)} />
+        <button onClick={() => setPlayListDrawerOpen(true)}>播放列表</button>
+        <PlayListDrawer open={playListDrawerOpen} onClose={() => setPlayListDrawerOpen(false)} />
       </div>
     )
   }

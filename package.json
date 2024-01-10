@@ -10,7 +10,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder",
+    "dev:win": "vite --mode electron",
+    "build": "tsc && vite build",
+    "build:win": "tsc && vite build --mode electron && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest",
     "preview": "vite preview",

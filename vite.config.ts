@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vite"
+import { defineConfig, loadEnv } from "vite"
 import react from "@vitejs/plugin-react"
 import path from "node:path"
 import electron from "vite-plugin-electron"
@@ -7,59 +7,61 @@ import renderer from "vite-plugin-electron-renderer"
 import pkg from "./package.json"
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
+export default defineConfig(({ command, mode }) => {
   const isServe = command === "serve"
   const isBuild = command === "build"
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG
 
+  const env = loadEnv(mode, process.cwd(), "")
+  const electronPlugins = [
+    electron([
+      {
+        // Main-Process entry file of the Electron App.
+        entry: "electron/main/index.ts",
+        onstart(options) {
+          if (process.env.VSCODE_DEBUG) {
+            console.log(/* For `.vscode/.debug.script.mjs` */ "[startup] Electron App")
+          } else {
+            options.startup()
+          }
+        },
+        vite: {
+          build: {
+            sourcemap,
+            minify: isBuild,
+            outDir: "dist-electron/main",
+            rollupOptions: {
+              external: Object.keys("dependencies" in pkg ? pkg.dependencies : {}),
+            },
+          },
+        },
+      },
+      {
+        entry: "electron/preload/index.ts",
+        onstart(options) {
+          // Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete,
+          // instead of restarting the entire Electron App.
+          options.reload()
+        },
+        vite: {
+          build: {
+            sourcemap: sourcemap ? "inline" : undefined, // #332
+            minify: isBuild,
+            outDir: "dist-electron/preload",
+            rollupOptions: {
+              external: Object.keys("dependencies" in pkg ? pkg.dependencies : {}),
+            },
+          },
+        },
+      },
+    ]),
+    // Use Node.js API in the Renderer-process
+    renderer(),
+  ]
+
   return {
     test: {},
-    plugins: [
-      react(),
-      electron([
-        {
-          // Main-Process entry file of the Electron App.
-          entry: "electron/main/index.ts",
-          onstart(options) {
-            if (process.env.VSCODE_DEBUG) {
-              console.log(/* For `.vscode/.debug.script.mjs` */ "[startup] Electron App")
-            } else {
-              options.startup()
-            }
-          },
-          vite: {
-            build: {
-              sourcemap,
-              minify: isBuild,
-              outDir: "dist-electron/main",
-              rollupOptions: {
-                external: Object.keys("dependencies" in pkg ? pkg.dependencies : {}),
-              },
-            },
-          },
-        },
-        {
-          entry: "electron/preload/index.ts",
-          onstart(options) {
-            // Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete,
-            // instead of restarting the entire Electron App.
-            options.reload()
-          },
-          vite: {
-            build: {
-              sourcemap: sourcemap ? "inline" : undefined, // #332
-              minify: isBuild,
-              outDir: "dist-electron/preload",
-              rollupOptions: {
-                external: Object.keys("dependencies" in pkg ? pkg.dependencies : {}),
-              },
-            },
-          },
-        },
-      ]),
-      // Use Node.js API in the Renderer-process
-      renderer(),
-    ],
+    plugins: [react(), env.VITE_MODE === "electron" ? electronPlugins : []],
     resolve: {
       alias: {
         "@": path.join(__dirname, "src"),

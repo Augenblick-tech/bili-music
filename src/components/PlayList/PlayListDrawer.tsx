@@ -4,6 +4,7 @@ import { changeMusicFromBliVideoAtom, handlePlayMusicAtom } from "@/stores/Music
 import { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { ConfigProvider, Drawer } from "antd"
 import { useAtom } from "jotai"
+import MusicImage from "@/components/common/MusicImage"
 
 type Props = {
   open: boolean
@@ -27,7 +28,7 @@ const PlayListDrawer = ({ className, open, onClose }: MergeWithDefaultProps<Prop
         }}
       >
         <Drawer className="bg-slate-50" title="播放列表" placement="right" onClose={onClose} open={open}>
-          {musicPlayList.map((item, _) => (
+          {musicPlayList.map((item) => (
             <div
               className="flex round-2 p-2 rounded-xl cursor-pointer hover:bg-white"
               key={item.title + item.biliInfo?.bvid}
@@ -42,7 +43,7 @@ const PlayListDrawer = ({ className, open, onClose }: MergeWithDefaultProps<Prop
                 handlePlayMusic()
               }}
             >
-              <img className="w-[3rem] h-[3rem] object-cover rounded-lg" src={item.cover} />
+              <MusicImage className="w-[3rem] h-[3rem] object-cover rounded-lg" src={item.cover} />
               <div className="p-2">
                 <p>{item.title}</p>
               </div>
