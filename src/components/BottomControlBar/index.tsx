@@ -12,8 +12,13 @@ import { FaPlay } from "react-icons/fa6"
 import { FaPause } from "react-icons/fa6"
 import { ConfigProvider, Slider } from "antd"
 import PlayListDrawer from "../PlayList/PlayListDrawer"
+import { PiPlaylist } from "react-icons/pi"
+import { BiVolume } from "react-icons/bi"
+import { BiVolumeFull } from "react-icons/bi"
+import ProgressBar from "../lib/ProgressBar"
 
 const progressAtom = atom(0)
+const volumeAtom = atom(1)
 const playListDrawerOpenAtom = atom(false)
 
 const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
@@ -84,7 +89,7 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
 
     useEffect(() => {
       setProgress((musicPlayerState?.progress ?? 0) * 100)
-    }, [musicPlayerState])
+    }, [musicPlayerState, setProgress])
 
     return (
       <ConfigProvider
@@ -119,9 +124,38 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   function PlayListButton() {
     const [playListDrawerOpen, setPlayListDrawerOpen] = useAtom(playListDrawerOpenAtom)
     return (
-      <div>
-        <button onClick={() =>setPlayListDrawerOpen(true)}>播放列表</button>
-        <PlayListDrawer open={playListDrawerOpen} onClose={() =>setPlayListDrawerOpen(false)} />
+      <div className="mx-2">
+        <button
+          className="align-middle text-2xl text-slate-500 hover:text-slate-900"
+          onClick={() => setPlayListDrawerOpen(true)}
+        >
+          <PiPlaylist />
+        </button>
+        <PlayListDrawer open={playListDrawerOpen} onClose={() => setPlayListDrawerOpen(false)} />
+      </div>
+    )
+  }
+
+  function VolumeControll() {
+    const [volume, setVolume] = useAtom(volumeAtom)
+    return (
+      <div className="mx-2 flex-1 flex items-center">
+        <button className="text-2xl text-slate-500 hover:text-slate-900 mr-2">
+          {/* <BiVolume /> */}
+          <BiVolumeFull />
+        </button>
+        <ProgressBar
+          className={""}
+          defaultProgress={1}
+          progress={volume}
+          onChange={(value: number) => {
+            setVolume(value)
+          }}
+          onChangeComplete={(value) => {
+            console.log("volume: " + value)
+            setVolume(value)
+          }}
+        />
       </div>
     )
   }
@@ -143,8 +177,9 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
             <EndingTimeLabel />
           </div>
         </div>
-        <div className="function flex-[30%]">
+        <div className="function flex-[30%] flex items-center">
           <PlayListButton />
+          <VolumeControll />
         </div>
       </div>
     </div>
