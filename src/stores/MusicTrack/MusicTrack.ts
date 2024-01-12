@@ -3,11 +3,18 @@ import { BiliVideoInfo, BiliVideoURL } from "@/types/bili/BiliVideo"
 import { atom } from "jotai"
 
 /**
+ * 音频 HTML 元素
+ */
+export const globalMusicElementAtom = atom<HTMLAudioElement | null>(null)
+
+/**
  * 全局音乐播放相关状态。
  * （作为音乐播放器，用于听歌的情景）
  */
 const _musicPlayerStateAtom = atom<MusicPlayerState | null>(null)
 const musicPlayerStateAtom = atom((get) => get(_musicPlayerStateAtom))
+
+const musicPlayerVolumeAtom = atom(1)
 
 /**
  * 从url加载音乐
@@ -76,6 +83,7 @@ const handleJumpMusicProgressAtom = atom(null, (_, __, progress: number) => {
 
 export {
   musicPlayerStateAtom,
+  musicPlayerVolumeAtom,
   changeMusicFromBliVideoAtom,
   changeMusicUrlAtom,
   handlePlayMusicAtom,

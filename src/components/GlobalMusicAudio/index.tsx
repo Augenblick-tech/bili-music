@@ -1,5 +1,9 @@
 import { handlePlayNextMusicAtom } from "@/stores/MusicTrack/MusicPlayList"
-import { handleUpdateMusicProgressAtom, musicPlayerStateAtom } from "@/stores/MusicTrack/MusicTrack"
+import {
+  globalMusicElementAtom,
+  handleUpdateMusicProgressAtom,
+  musicPlayerStateAtom,
+} from "@/stores/MusicTrack/MusicTrack"
 import { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { PlayStatus } from "@/types/MusicPlayer"
 import { useAtom } from "jotai"
@@ -16,6 +20,7 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
 
   const [, handleUpdateMusicProgress] = useAtom(handleUpdateMusicProgressAtom)
   const [, handlePlayNextMusic] = useAtom(handlePlayNextMusicAtom)
+  const [, setGlobalMusicElement] = useAtom(globalMusicElementAtom)
 
   useEffect(() => {
     if (!musicPlayerState) return
@@ -28,8 +33,13 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
   }, [musicPlayerState])
 
   useEffect(() => {
+    setGlobalMusicElement(audioRef.current)
+  }, [audioRef, setGlobalMusicElement])
+
+  useEffect(() => {
     // 定期更新状态中的播放进度
-    let interval = setInterval(() => {
+    const ref = audioRef.current
+    const interval = setInterval(() => {
       if (!audioRef.current) return
       handleUpdateMusicProgress(audioRef.current.currentTime / audioRef.current.duration)
     }, 1000)
@@ -38,9 +48,9 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
 
     return () => {
       clearInterval(interval)
-      audioRef.current?.removeEventListener("ended", handlePlayNextMusic)
+      ref?.removeEventListener("ended", handlePlayNextMusic)
     }
-  }, [])
+  }, [handlePlayNextMusic, handleUpdateMusicProgress])
 
   return (
     <audio

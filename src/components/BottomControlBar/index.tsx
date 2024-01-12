@@ -5,6 +5,7 @@ import {
   handlePauseMusicAtom,
   musicPlayerStateAtom,
   handleJumpMusicProgressAtom,
+  musicPlayerVolumeAtom,
 } from "@/stores/MusicTrack/MusicTrack"
 import { PlayStatus } from "@/types/MusicPlayer"
 import { useEffect } from "react"
@@ -12,23 +13,28 @@ import { FaPlay } from "react-icons/fa6"
 import { FaPause } from "react-icons/fa6"
 import { ConfigProvider, Slider } from "antd"
 import PlayListDrawer from "../PlayList/PlayListDrawer"
+import { PiPlaylist } from "react-icons/pi"
+import { BiVolumeFull } from "react-icons/bi"
+import ProgressBar from "../lib/ProgressBar"
+import { useGlobalMusicController } from "@/hooks/useGlobalMusicController"
 import MusicImage from "@/components/common/MusicImage"
 
 const progressAtom = atom(0)
 const playListDrawerOpenAtom = atom(false)
 
 const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
-  const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
-  const [, handlePauseMusic] = useAtom(handlePauseMusicAtom)
+  const globalMusicController = useGlobalMusicController()
 
   function formatDuration(value: number) {
-    let minute = Math.floor(value / 60)
-    let secondLeft = value - minute * 60
+    const minute = Math.floor(value / 60)
+    const secondLeft = value - minute * 60
     return `${minute < 10 ? `0${minute}` : minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`
   }
 
   function PlayOrPauseButton() {
     const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+    const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
+    const [, handlePauseMusic] = useAtom(handlePauseMusicAtom)
     return (
       <button
         className="inline-flex items-center justify-center bg-gray-400/20 hover:bg-gray-400/30 active:scale-90 w-9 h-9 rounded-full"
@@ -89,7 +95,7 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
 
     useEffect(() => {
       setProgress((musicPlayerState?.progress ?? 0) * 100)
-    }, [musicPlayerState])
+    }, [musicPlayerState, setProgress])
 
     return (
       <ConfigProvider
@@ -124,9 +130,34 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   function PlayListButton() {
     const [playListDrawerOpen, setPlayListDrawerOpen] = useAtom(playListDrawerOpenAtom)
     return (
-      <div>
-        <button onClick={() => setPlayListDrawerOpen(true)}>播放列表</button>
+      <div className="mx-2">
+        <button
+          className="align-middle text-2xl text-slate-500 hover:text-slate-900"
+          onClick={() => setPlayListDrawerOpen(true)}
+        >
+          <PiPlaylist />
+        </button>
         <PlayListDrawer open={playListDrawerOpen} onClose={() => setPlayListDrawerOpen(false)} />
+      </div>
+    )
+  }
+
+  function VolumeControll() {
+    const [volume, setVolume] = useAtom(musicPlayerVolumeAtom)
+    return (
+      <div className="mx-2 flex-1 flex items-center">
+        <button className="text-2xl text-slate-500 hover:text-slate-900 mr-2">
+          {/* <BiVolume /> */}
+          <BiVolumeFull />
+        </button>
+        <ProgressBar
+          className={""}
+          progress={volume}
+          onChange={(value: number) => {
+            setVolume(value)
+            globalMusicController.setVolume(value)
+          }}
+        />
       </div>
     )
   }
@@ -148,8 +179,9 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
             <EndingTimeLabel />
           </div>
         </div>
-        <div className="function flex-[30%]">
+        <div className="function flex-[30%] flex items-center">
           <PlayListButton />
+          <VolumeControll />
         </div>
       </div>
     </div>
