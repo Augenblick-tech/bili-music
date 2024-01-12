@@ -2,7 +2,7 @@ import { Navigate, RouterProvider, createHashRouter } from "react-router-dom"
 import App from "@/App"
 import { Suspense, lazy } from "react"
 
-const BMSearchResult = lazy(() => import("@/views/BMSearchResult"))
+const SearchResult = lazy(() => import("@/views/SearchResult"))
 const SideBarMusicPlaylist = lazy(() => import("@/views/UserFavFolder"))
 
 const router = createHashRouter([
@@ -26,7 +26,7 @@ const router = createHashRouter([
         path: "search",
         element: (
           <Suspense>
-            <BMSearchResult />
+            <SearchResult />
           </Suspense>
         ),
       },

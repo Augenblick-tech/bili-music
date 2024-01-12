@@ -17,6 +17,7 @@ import { PiPlaylist } from "react-icons/pi"
 import { BiVolumeFull } from "react-icons/bi"
 import ProgressBar from "../lib/ProgressBar"
 import { useGlobalMusicController } from "@/hooks/useGlobalMusicController"
+import MusicImage from "@/components/common/MusicImage"
 
 const progressAtom = atom(0)
 const playListDrawerOpenAtom = atom(false)
@@ -54,7 +55,11 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   function CoverImage() {
     const [musicPlayerState] = useAtom(musicPlayerStateAtom)
     return musicPlayerState?.cover ? (
-      <img aria-label="cover" className="rounded-md w-12 h-12 object-cover" src={musicPlayerState?.cover}></img>
+      <MusicImage
+        aria-label="cover"
+        className="rounded-md w-12 h-12 object-cover"
+        src={musicPlayerState?.cover}
+      ></MusicImage>
     ) : (
       <div></div>
     )

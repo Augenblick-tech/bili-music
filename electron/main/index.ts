@@ -1,7 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain, session } from "electron"
 import { release } from "node:os"
-import { join } from "node:path"
-import { update } from "./update"
+import { join, dirname } from "node:path"
+import { fileURLToPath } from "url"
 import fs from "fs-extra"
 
 // The built directory structure
@@ -14,6 +14,8 @@ import fs from "fs-extra"
 // ├─┬ dist
 // │ └── index.html    > Electron-Renderer
 //
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
 process.env.DIST_ELECTRON = join(__dirname, "../")
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist")
 process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL
@@ -40,7 +42,7 @@ process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
 
 let win: BrowserWindow | null = null
 // Here, you can also use other preload
-const preload = join(__dirname, "../preload/index.js")
+const preload = join(process.env.DIST_ELECTRON, "preload/index.mjs")
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, "index.html")
 
@@ -176,9 +178,6 @@ async function createWindow() {
   })
 
   ipcMain.handle("getCookies", () => cookies)
-
-  // Apply electron-updater
-  update(win)
 }
 
 app.whenReady().then(createWindow)
