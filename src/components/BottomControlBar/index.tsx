@@ -14,7 +14,7 @@ import { FaPause } from "react-icons/fa6"
 import { ConfigProvider, Slider } from "antd"
 import PlayListDrawer from "../PlayList/PlayListDrawer"
 import { PiPlaylist } from "react-icons/pi"
-import { BiVolumeFull } from "react-icons/bi"
+import { BiVolume, BiVolumeFull } from "react-icons/bi"
 import ProgressBar from "../lib/ProgressBar"
 import { useGlobalMusicController } from "@/hooks/useGlobalMusicController"
 import MusicImage from "@/components/common/MusicImage"
@@ -146,9 +146,19 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
     const [volume, setVolume] = useAtom(musicPlayerVolumeAtom)
     return (
       <div className="mx-2 flex-1 flex items-center">
-        <button className="text-2xl text-slate-500 hover:text-slate-900 mr-2">
-          {/* <BiVolume /> */}
-          <BiVolumeFull />
+        <button
+          className="text-2xl text-slate-500 hover:text-slate-900 mr-2"
+          onClick={() => {
+            if (globalMusicController.isMuted()) {
+              setVolume(globalMusicController.getCachedVolume())
+              globalMusicController.cancelMute()
+            } else {
+              setVolume(0)
+              globalMusicController.mute()
+            }
+          }}
+        >
+          {volume === 0 ? <BiVolume /> : <BiVolumeFull />}
         </button>
         <ProgressBar
           className={""}

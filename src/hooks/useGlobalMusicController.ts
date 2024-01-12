@@ -1,19 +1,46 @@
 import { globalMusicElementAtom } from "@/stores/MusicTrack/MusicTrack"
 import { useAtom } from "jotai"
 
-export function useGlobalMusicController() {
+/**
+ * 音乐播放控制
+ */
+export const useGlobalMusicController = () => {
   const [audioEl] = useAtom(globalMusicElementAtom)
+  let cachedVolume = audioEl?.volume ?? 1
+  const play = () => {
+    audioEl!.play()
+  }
+  const pause = () => {
+    audioEl!.pause()
+  }
+  const isMuted = () => {
+    return audioEl!.volume === 0 || audioEl!.muted
+  }
   const setVolume = (value: number) => {
-    if (!audioEl) return
-    audioEl.volume = value
+    audioEl!.volume = value
   }
   const volumeUp = () => {
-    if (!audioEl) return
-    audioEl.volume = audioEl.volume + 0.1
+    audioEl!.volume = audioEl!.volume + 0.1
   }
   const volumeDown = () => {
-    if (!audioEl) return
-    audioEl.volume = audioEl.volume - 0.1
+    audioEl!.volume = audioEl!.volume - 0.1
   }
-  return { setVolume, volumeUp, volumeDown }
+  const mute = () => {
+    cachedVolume = audioEl!.volume
+    audioEl!.volume = 0
+  }
+  const cancelMute = () => {
+    audioEl!.volume = cachedVolume
+  }
+  const toggleMute = () => {
+    if (audioEl!.muted || audioEl!.volume === 0) {
+      cancelMute()
+    } else {
+      mute()
+    }
+  }
+  const getCachedVolume = () => {
+    return cachedVolume
+  }
+  return { play, pause, setVolume, volumeUp, volumeDown, isMuted, mute, cancelMute, toggleMute, getCachedVolume }
 }
