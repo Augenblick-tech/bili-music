@@ -9,7 +9,7 @@ export interface ProgressBarProps {
    * Current progress. Range in [0-1], eg. 0.23
    */
   progress?: number
-  defaultProgress?: number
+  // defaultProgress?: number
   /**
    * Handle progress change.
    */
@@ -18,22 +18,14 @@ export interface ProgressBarProps {
    * Handle progress change when mouse up.
    */
   onChangeComplete?: (progress: number) => void
-  onMouseDown?: React.MouseEventHandler<HTMLDivElement>
-  onMouseUp?: React.MouseEventHandler<HTMLDivElement>
+  // onMouseDown?: React.MouseEventHandler<HTMLDivElement>
+  // onMouseUp?: React.MouseEventHandler<HTMLDivElement>
 }
 
 /**
  * 进度条组件（长条状），由当前进度与完整进度两个长条元素组成
  */
-const ProgressBar = ({
-  className,
-  progress,
-  defaultProgress,
-  onChange,
-  onChangeComplete,
-  onMouseDown,
-  onMouseUp,
-}: ProgressBarProps) => {
+const ProgressBar = ({ className, progress, onChange, onChangeComplete }: ProgressBarProps) => {
   /**
    * Current progress bar in front.
    */
@@ -51,24 +43,25 @@ const ProgressBar = ({
 
   const targtRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    function getEventProgress(e: MouseEvent): number {
-      const fullWidth = targtRef.current?.clientWidth ?? 0
-      const currentWidth = e.clientX - (targtRef.current?.offsetLeft ?? 0)
-      let progress = 0
-      if (currentWidth > fullWidth) {
-        progress = 1
-      } else if (currentWidth > 0 && currentWidth < fullWidth) {
-        progress = currentWidth / fullWidth
-      }
-      return progress
+  const getEventProgress = (e: MouseEvent | React.MouseEvent): number => {
+    const fullWidth = targtRef.current?.clientWidth ?? 0
+    const currentWidth = e.clientX - (targtRef.current?.offsetLeft ?? 0)
+    let progress = 0
+    if (currentWidth > fullWidth) {
+      progress = 1
+    } else if (currentWidth > 0 && currentWidth < fullWidth) {
+      progress = currentWidth / fullWidth
     }
+    return progress
+  }
+
+  useEffect(() => {
     const handleMove = (e: MouseEvent) => {
       if (onChange && isMouseDown) onChange(getEventProgress(e))
     }
     const handleUp = (e: MouseEvent) => {
+      if (onChangeComplete && isMouseDown) onChangeComplete(getEventProgress(e))
       isMouseDown = false
-      if (onChangeComplete) onChangeComplete(getEventProgress(e))
     }
     document.addEventListener("mousemove", handleMove)
     document.addEventListener("mouseup", handleUp)
@@ -82,7 +75,10 @@ const ProgressBar = ({
     <div
       ref={targtRef}
       className={`${className} ${ModuleClasss["progress-bar"]}`}
-      onMouseDown={() => (isMouseDown = true)}
+      onMouseDown={(e) => {
+        if (onChange) onChange(getEventProgress(e))
+        isMouseDown = true
+      }}
     >
       <FullBar />
       <CurrentBar />

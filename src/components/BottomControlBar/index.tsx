@@ -5,6 +5,7 @@ import {
   handlePauseMusicAtom,
   musicPlayerStateAtom,
   handleJumpMusicProgressAtom,
+  musicPlayerVolumeAtom,
 } from "@/stores/MusicTrack/MusicTrack"
 import { PlayStatus } from "@/types/MusicPlayer"
 import { useEffect } from "react"
@@ -13,26 +14,26 @@ import { FaPause } from "react-icons/fa6"
 import { ConfigProvider, Slider } from "antd"
 import PlayListDrawer from "../PlayList/PlayListDrawer"
 import { PiPlaylist } from "react-icons/pi"
-import { BiVolume } from "react-icons/bi"
 import { BiVolumeFull } from "react-icons/bi"
 import ProgressBar from "../lib/ProgressBar"
+import { useGlobalMusicController } from "@/hooks/useGlobalMusicController"
 
 const progressAtom = atom(0)
-const volumeAtom = atom(1)
 const playListDrawerOpenAtom = atom(false)
 
 const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
-  const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
-  const [, handlePauseMusic] = useAtom(handlePauseMusicAtom)
+  const globalMusicController = useGlobalMusicController()
 
   function formatDuration(value: number) {
-    let minute = Math.floor(value / 60)
-    let secondLeft = value - minute * 60
+    const minute = Math.floor(value / 60)
+    const secondLeft = value - minute * 60
     return `${minute < 10 ? `0${minute}` : minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`
   }
 
   function PlayOrPauseButton() {
     const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+    const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
+    const [, handlePauseMusic] = useAtom(handlePauseMusicAtom)
     return (
       <button
         className="inline-flex items-center justify-center bg-gray-400/20 hover:bg-gray-400/30 active:scale-90 w-9 h-9 rounded-full"
@@ -137,7 +138,7 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   }
 
   function VolumeControll() {
-    const [volume, setVolume] = useAtom(volumeAtom)
+    const [volume, setVolume] = useAtom(musicPlayerVolumeAtom)
     return (
       <div className="mx-2 flex-1 flex items-center">
         <button className="text-2xl text-slate-500 hover:text-slate-900 mr-2">
@@ -146,14 +147,10 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
         </button>
         <ProgressBar
           className={""}
-          defaultProgress={1}
           progress={volume}
           onChange={(value: number) => {
             setVolume(value)
-          }}
-          onChangeComplete={(value) => {
-            console.log("volume: " + value)
-            setVolume(value)
+            globalMusicController.setVolume(value)
           }}
         />
       </div>
