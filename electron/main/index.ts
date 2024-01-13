@@ -3,6 +3,7 @@ import { release } from "node:os"
 import { join, dirname } from "node:path"
 import { fileURLToPath } from "url"
 import fs from "fs-extra"
+import { getCookies, getParsedCookies, setCookies } from "./auth"
 
 // The built directory structure
 //
@@ -91,9 +92,9 @@ async function createWindow() {
 
   try {
     // get cookies
-    cookies = await fs.readJSON(join(app.getPath("userData"), "cookies.json"))
+    cookies = await getCookies()
     // console.log('Cookies loaded', cookies)
-    parsedCookies = cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join("; ")
+    parsedCookies = getParsedCookies(cookies)
     // console.log('Cookies parsed', parsedCookies)
   } catch (err) {
     const error = err as NodeJS.ErrnoException
@@ -153,18 +154,23 @@ async function createWindow() {
 
     loginWindow.loadURL("https://passport.bilibili.com/login")
 
-    loginWindow.webContents.on("did-navigate", (_, url) => {
+    loginWindow.webContents.on("did-navigate", async (_, url) => {
       if (url === "https://www.bilibili.com/") {
         // Save cookies
-        loginWindow.webContents.session.cookies.get({}).then((newCookies) => {
-          fs.writeJSON(join(app.getPath("userData"), "cookies.json"), newCookies)
-          // console.log('Cookies saved', cookies)
+        const newCookies = await loginWindow.webContents.session.cookies.get({})
+        setCookies(newCookies)
+        parsedCookies = getParsedCookies(newCookies)
 
-          cookies = newCookies
-          parsedCookies = cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join("; ")
-        })
+        const localStorage = (await loginWindow.webContents.executeJavaScript("({...localStorage});", true)) as Record<
+          string,
+          string
+        >
 
-        win?.webContents.send("login-success")
+        fs.writeJSON(join(app.getPath("userData"), "localStorage.json"), localStorage)
+        // console.log('localStorage saved', localStorage)
+        // console.log(localStorage.ac_time_value)
+
+        win?.webContents.send("login-success", cookies, localStorage)
         loginWindow.close()
       }
     })
@@ -177,10 +183,27 @@ async function createWindow() {
     win?.webContents.send("logout-success")
   })
 
-  ipcMain.handle("getCookies", () => cookies)
+  ipcMain.handle("getCookies", () => parsedCookies)
 }
 
-app.whenReady().then(createWindow)
+app
+  .whenReady()
+  .then(createWindow)
+  .then(() => {
+    const refreshCookieWindow = new BrowserWindow({
+      show: false,
+    })
+    if (cookies.length) {
+      refreshCookieWindow.loadURL("https://www.bilibili.com/")
+      refreshCookieWindow.webContents.on("did-finish-load", async () => {
+        const newCookies = await refreshCookieWindow.webContents.session.cookies.get({})
+        setCookies(newCookies)
+        parsedCookies = getParsedCookies(newCookies)
+        // console.log("Cookies refreshed", cookies)
+        refreshCookieWindow.close()
+      })
+    }
+  })
 
 app.on("window-all-closed", () => {
   win = null

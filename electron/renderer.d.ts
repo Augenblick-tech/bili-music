@@ -5,7 +5,9 @@ export interface IElectronAPI {
 export interface IBiliAuth {
   openLoginWindow: () => void
   handleLogout: () => void
-  getCookies: () => Promise<Electron.Cookie[]>
+  getCookies: () => Promise<string>
+  getLocalStorage?: () => Promise<Record<string, string>>
+  onLoginSuccess: (callback: (cookies: Electron.Cookie[], localStorage: Record<string, string>) => void) => void
 }
 
 export interface IWindowControl {

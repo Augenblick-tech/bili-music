@@ -26,6 +26,23 @@ contextBridge.exposeInMainWorld("biliAuth", {
         })
     })
   },
+  getLocalStorage: () => {
+    return new Promise((resolve, reject) => {
+      ipcRenderer
+        .invoke("getLocalStorage")
+        .then((localStorage) => {
+          resolve(localStorage)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  },
+  onLoginSuccess: (callback: (cookies: Electron.Cookie[], localStorage: Record<string, string>) => void) => {
+    ipcRenderer.on("login-success", (_, cookies, localStorage) => {
+      callback(cookies, localStorage)
+    })
+  },
 })
 
 contextBridge.exposeInMainWorld("windowControl", {
