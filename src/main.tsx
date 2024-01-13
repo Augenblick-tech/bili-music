@@ -1,7 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import RouterWrapper from "@/router"
-import "default-passive-events"
 
 import "@/assets/main.css"
 

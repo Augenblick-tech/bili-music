@@ -19,6 +19,10 @@ export const addProxyToUrl = (url: string): string => {
 }
 
 export const getTopDomain = (url: string) => {
+  if (!url) {
+    return "localhost"
+  }
+
   url = url.replace(/(^\w+:|^)\/\//, "")
   url = url.split("/")[0]
   url = url.split(":")[0]

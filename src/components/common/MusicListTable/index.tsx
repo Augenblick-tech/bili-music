@@ -41,6 +41,7 @@ const MusicListTable = <T extends AnyObject>({
         rowClassName="table-row"
         className={`
         ${className ?? ""}
+          select-none
           [&_.ant-table]:bg-transparent
           [&_.table-row]:overflow-hidden
           [&_.table-row_td:first-child]:[border-top-left-radius:10px] [&_.table-row_td:first-child]:[border-bottom-left-radius:10px]

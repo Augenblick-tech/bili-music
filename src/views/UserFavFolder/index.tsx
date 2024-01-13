@@ -56,7 +56,7 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
           render={(value, record, index) => {
             return (
               <div className="flex" ref={index === (items?.medias.length ?? 0) - 1 ? sentinel : null}>
-                <div className="flex items-center mr-2 w-12 h-12 relative overflow-hidden">
+                <div className="flex items-center mr-2 w-12 h-12 relative overflow-hidden flex-shrink-0">
                   <MusicImage className="h-full w-full rounded object-cover" src={record.cover} alt="" />
                   <div className="cover absolute t-0 l-0 h-full w-full rounded hidden">
                     <FaRegCirclePlay
@@ -102,6 +102,7 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
           title="时长"
           dataIndex="duration"
           key="duration"
+          align="center"
           width="98px"
           render={(value) => {
             return formatDuration(value)
@@ -147,7 +148,7 @@ const UserFavFolder = ({ className }: MergeWithDefaultProps) => {
   return (
     <div className={`${className ?? ""} scrollbar h-full`} ref={topRef}>
       <header className="flex mb-2">
-        <div className="cover w-44 h-44 mr-8 rounded-xl overflow-hidden">
+        <div className="cover w-44 h-44 mr-8 rounded-xl overflow-hidden flex-shrink-0">
           <MusicImage className="h-full object-cover" src={favFolderDetailList?.data.info.cover || ""} alt="" />
         </div>
         <div className="cover-info flex flex-col justify-between">

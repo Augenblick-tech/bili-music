@@ -1,10 +1,11 @@
-import { useAtom } from "jotai"
+import { useAtom, useAtomValue } from "jotai"
 import type { WritableAtom } from "jotai"
 import { handleUserCreatedFolderAtom, handleUserCollectedFolderAtom } from "@/stores/UserFavFolder/UserFavFolder"
 import { useEffect, useState } from "react"
 import type { MenuProps } from "antd"
 import { getFavFolderInfo } from "@/api/BiliUserFavFolder"
 import type { UserFavFolder, UserFavFolderItem } from "@/types/bili/BiliUserFavFolder"
+import { userAtom } from "@/stores/AuthInfo"
 
 type MenuItem = Required<MenuProps>["items"][number]
 
@@ -36,25 +37,20 @@ const useFetchItems = <T extends UserFavFolderItem>(
 ) => {
   const [userFolder, getUserFolder] = useAtom(fetchFolderAtom)
   const [userItems, setUserItems] = useState<MenuItem[]>()
+  const user = useAtomValue(userAtom)
 
   useEffect(() => {
     const fetchUserCreatedFolder = async () => {
-      let userId: string | undefined
-      try {
-        const electronCookies = await window.biliAuth.getCookies()
-        userId = electronCookies.find((item) => item.name === "DedeUserID")?.value
-        if (!userId) return
-      } catch (error) {
-        const err = error as Error
-        console.log(err.name)
-        const cookie = document.cookie
-        userId = cookie.match(/DedeUserID=(\d+)/)?.[1]
-        console.log(userId)
+      const userId = user?.id
+      console.log("userId", userId)
+      if (!userId) {
+        setUserItems([])
+        return
       }
       await getUserFolder(Number(userId))
     }
     fetchUserCreatedFolder()
-  }, [getUserFolder])
+  }, [getUserFolder, user])
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -79,21 +75,25 @@ const useFetchItems = <T extends UserFavFolderItem>(
 const useMenuList = (getIconNode: (url: string) => React.ReactNode) => {
   const userCreatedItems = useFetchItems(handleUserCreatedFolderAtom, getIconNode)
   const userCollectedItems = useFetchItems(handleUserCollectedFolderAtom, getIconNode)
-  const [items, setItems] = useState<MenuProps["items"]>([])
+  const [items, setItems] = useState<MenuProps["items"]>()
 
   useEffect(() => {
     setItems((prev) => {
       if (!prev) return []
 
-      const newItems: MenuItem[] = [
-        getItem("首页", "home"),
+      const staticItems: MenuItem[] = [getItem("首页", "home")]
+
+      const newCreatedItems: MenuItem[] = [
         { type: "divider" },
         getItem("创建的歌单", "folder-created", undefined, userCreatedItems),
+      ]
+
+      const newCollectedItems: MenuItem[] = [
         { type: "divider" },
         getItem("收藏的歌单", "folder-collected", undefined, userCollectedItems),
       ]
 
-      return newItems
+      return staticItems.concat(userCreatedItems ? newCreatedItems : [], userCollectedItems ? newCollectedItems : [])
     })
   }, [userCollectedItems, userCreatedItems])
 

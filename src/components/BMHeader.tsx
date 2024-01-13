@@ -3,8 +3,12 @@ import SearchBar from "@/components/common/SearchBar"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { proxyUrl } from "@/api/axios"
 import { getTopDomain } from "@/utils/htmlUtil"
+import { useSetAtom } from "jotai"
+import { userAtom } from "@/stores/AuthInfo"
 
 const BMHeader = ({ className }: MergeWithDefaultProps) => {
+  const setUser = useSetAtom(userAtom)
+
   const setCookie = () => {
     // document.cookie = ""
     const cookie = prompt("请输入 cookie")
@@ -47,6 +51,7 @@ const BMHeader = ({ className }: MergeWithDefaultProps) => {
           <button
             onClick={() => {
               window.biliAuth.handleLogout()
+              setUser()
             }}
           >
             注销

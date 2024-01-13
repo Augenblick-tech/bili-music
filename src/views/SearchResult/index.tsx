@@ -142,10 +142,11 @@ const SearchResult = ({ className }: MergeWithDefaultProps) => {
               )
             }}
           />
-          <Column<BiliSearchResult> title="UP主" dataIndex="author" key="author" />
+          <Column<BiliSearchResult> title="UP主" dataIndex="author" key="author" align="center" />
           <Column<BiliSearchResult>
             title="播放量"
             dataIndex="play"
+            align="center"
             key="play"
             render={(value) => {
               return formatPlayCount(value)
@@ -154,6 +155,7 @@ const SearchResult = ({ className }: MergeWithDefaultProps) => {
           <Column<BiliSearchResult>
             title="发布时间"
             dataIndex="pubdate"
+            align="center"
             key="pubdate"
             render={(value) => {
               return formatTime(value * 1000)
@@ -163,10 +165,9 @@ const SearchResult = ({ className }: MergeWithDefaultProps) => {
       ) : (
         <InfiniteSpin />
       )}
-      {!hasMore ||
-        (searchResult?.length !== 0 && (
-          <div className="text-center text-gray-400 text-sm py-2 my-2 select-none">没有更多了哦~</div>
-        ))}
+      {!hasMore && searchResult?.length !== 0 && (
+        <div className="text-center text-gray-400 text-sm py-2 my-2 select-none">没有更多了哦~</div>
+      )}
     </div>
   )
 }

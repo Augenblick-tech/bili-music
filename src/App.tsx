@@ -7,11 +7,14 @@ import { themeAtom } from "./stores/AppTheme"
 import { useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { locationAtom } from "./stores/location"
+import { userAtom } from "./stores/AuthInfo"
+import { getUserId } from "./utils/authUtils"
 
 function App() {
   const setTheme = useSetAtom(themeAtom)
   const location = useLocation()
   const setLoc = useSetAtom(locationAtom)
+  const setUser = useSetAtom(userAtom)
 
   useEffect(() => {
     const theme = "default"
@@ -26,6 +29,15 @@ function App() {
       searchParams: new URLSearchParams(location.search),
     })
   }, [location, setLoc])
+
+  useEffect(() => {
+    window.electronAPI &&
+      window.biliAuth.onLoginSuccess(async () => {
+        const userId = await getUserId()
+        setUser(userId)
+      })
+    getUserId().then((userId) => setUser(userId))
+  }, [setUser])
 
   return (
     <div className="app relative h-screen rounded-lg bg-[rgb(var(--bg-color))] border overflow-hidden">
