@@ -1,3 +1,4 @@
+import { useCurrentMusicStorage } from "@/storage/CurrentPlayingMusic"
 import { globalMusicElementAtom } from "@/stores/MusicTrack/MusicTrack"
 import { useAtom } from "jotai"
 
@@ -6,7 +7,8 @@ import { useAtom } from "jotai"
  */
 export const useGlobalMusicController = () => {
   const [audioEl] = useAtom(globalMusicElementAtom)
-  let cachedVolume = audioEl?.volume ?? 1
+  const currentMusicStorage = useCurrentMusicStorage()
+  let cachedVolume = currentMusicStorage.getVolume() ?? 1
   const play = () => {
     audioEl!.play()
   }
@@ -18,19 +20,26 @@ export const useGlobalMusicController = () => {
   }
   const setVolume = (value: number) => {
     audioEl!.volume = value
+    currentMusicStorage.setVolume(value)
   }
   const volumeUp = () => {
-    audioEl!.volume = audioEl!.volume + 0.1
+    const newVolume = audioEl!.volume + 0.1
+    audioEl!.volume = newVolume
+    currentMusicStorage.setVolume(newVolume)
   }
   const volumeDown = () => {
-    audioEl!.volume = audioEl!.volume - 0.1
+    const newVolume = audioEl!.volume - 0.1
+    audioEl!.volume = newVolume
+    currentMusicStorage.setVolume(newVolume)
   }
   const mute = () => {
     cachedVolume = audioEl!.volume
     audioEl!.volume = 0
+    currentMusicStorage.setVolume(0)
   }
   const cancelMute = () => {
     audioEl!.volume = cachedVolume
+    currentMusicStorage.setVolume(cachedVolume)
   }
   const toggleMute = () => {
     if (audioEl!.muted || audioEl!.volume === 0) {

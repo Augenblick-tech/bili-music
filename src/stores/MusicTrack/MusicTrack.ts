@@ -1,3 +1,4 @@
+import { useCurrentMusicStorage } from "@/storage/CurrentPlayingMusic"
 import { MusicPlayerState, PlayStatus } from "@/types/MusicPlayer"
 import { BiliVideoInfo, BiliVideoURL } from "@/types/bili/BiliVideo"
 import { atom } from "jotai"
@@ -14,7 +15,8 @@ export const globalMusicElementAtom = atom<HTMLAudioElement | null>(null)
 const _musicPlayerStateAtom = atom<MusicPlayerState | null>(null)
 const musicPlayerStateAtom = atom((get) => get(_musicPlayerStateAtom))
 
-const musicPlayerVolumeAtom = atom(1)
+// eslint-disable-next-line react-hooks/rules-of-hooks
+const musicPlayerVolumeAtom = atom(useCurrentMusicStorage().getVolume())
 
 /**
  * 从url加载音乐
