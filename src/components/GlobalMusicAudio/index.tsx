@@ -9,7 +9,7 @@ import { PlayStatus } from "@/types/MusicPlayer"
 import { useAtom } from "jotai"
 import { useEffect, useRef } from "react"
 import { addProxyToUrl } from "@/utils/htmlUtil"
-import { useCurrentMusicStorage } from "@/storage/CurrentPlayingMusic"
+import { CurrentPlayingMusicStorage } from "@/storage/CurrentPlayingMusic"
 
 /**
  * 全局音乐播放轨道，作为音乐播放器情景下的核心，在视图上隐藏不可见
@@ -22,7 +22,6 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
   const [, handleUpdateMusicProgress] = useAtom(handleUpdateMusicProgressAtom)
   const [, handlePlayNextMusic] = useAtom(handlePlayNextMusicAtom)
   const [, setGlobalMusicElement] = useAtom(globalMusicElementAtom)
-  const currentMusicStorage = useCurrentMusicStorage()
 
   useEffect(() => {
     if (!musicPlayerState) return
@@ -37,7 +36,7 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
   useEffect(() => {
     setGlobalMusicElement(audioRef.current)
     if (audioRef.current) {
-      audioRef.current.volume = currentMusicStorage.getVolume()
+      audioRef.current.volume = CurrentPlayingMusicStorage.getVolume()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

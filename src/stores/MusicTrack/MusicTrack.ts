@@ -1,4 +1,4 @@
-import { useCurrentMusicStorage } from "@/storage/CurrentPlayingMusic"
+import { CurrentPlayingMusicStorage } from "@/storage/CurrentPlayingMusic"
 import { MusicPlayerState, PlayStatus } from "@/types/MusicPlayer"
 import { BiliVideoInfo, BiliVideoURL } from "@/types/bili/BiliVideo"
 import { atom } from "jotai"
@@ -9,19 +9,20 @@ import { atom } from "jotai"
 export const globalMusicElementAtom = atom<HTMLAudioElement | null>(null)
 
 /**
- * 全局音乐播放相关状态。
- * （作为音乐播放器，用于听歌的情景）
+ * 当前音乐的状态。
  */
 const _musicPlayerStateAtom = atom<MusicPlayerState | null>(null)
-const musicPlayerStateAtom = atom((get) => get(_musicPlayerStateAtom))
+export const musicPlayerStateAtom = atom((get) => get(_musicPlayerStateAtom))
 
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const musicPlayerVolumeAtom = atom(useCurrentMusicStorage().getVolume())
+/**
+ * 当前播放音乐的音量
+ */
+export const playingMusicVolumeAtom = atom(CurrentPlayingMusicStorage.getVolume())
 
 /**
  * 从url加载音乐
  */
-const changeMusicUrlAtom = atom(null, (get, set, url: string) => {
+export const changeMusicUrlAtom = atom(null, (get, set, url: string) => {
   const state = get(_musicPlayerStateAtom)
   if (!state) return
   set(_musicPlayerStateAtom, { ...state, url: url })
@@ -30,24 +31,27 @@ const changeMusicUrlAtom = atom(null, (get, set, url: string) => {
 /**
  * 从bili视频加载音乐
  */
-const changeMusicFromBliVideoAtom = atom(null, (_, set, biliVideoInfo: BiliVideoInfo, biliVideoUrl: BiliVideoURL) => {
-  set(_musicPlayerStateAtom, {
-    playStatus: PlayStatus.paused,
-    url: biliVideoUrl.dash.audio[0].baseUrl,
-    progress: 0,
-    currentTime: 0,
-    duration: biliVideoInfo.pages[0].duration,
-    title: biliVideoInfo.title,
-    cover: biliVideoInfo.pic,
-    biliInfo: biliVideoInfo,
-    biliUrl: biliVideoUrl,
-  })
-})
+export const changeMusicFromBliVideoAtom = atom(
+  null,
+  (_, set, biliVideoInfo: BiliVideoInfo, biliVideoUrl: BiliVideoURL) => {
+    set(_musicPlayerStateAtom, {
+      playStatus: PlayStatus.paused,
+      url: biliVideoUrl.dash.audio[0].baseUrl,
+      progress: 0,
+      currentTime: 0,
+      duration: biliVideoInfo.pages[0].duration,
+      title: biliVideoInfo.title,
+      cover: biliVideoInfo.pic,
+      biliInfo: biliVideoInfo,
+      biliUrl: biliVideoUrl,
+    })
+  },
+)
 
 /**
  * 立即播放
  */
-const handlePlayMusicAtom = atom(null, (get, set) => {
+export const handlePlayMusicAtom = atom(null, (get, set) => {
   const state = get(_musicPlayerStateAtom)
   if (!state) return
   set(_musicPlayerStateAtom, { ...state, playStatus: PlayStatus.playing })
@@ -56,7 +60,7 @@ const handlePlayMusicAtom = atom(null, (get, set) => {
 /**
  * 暂停播放
  */
-const handlePauseMusicAtom = atom(null, (get, set) => {
+export const handlePauseMusicAtom = atom(null, (get, set) => {
   const state = get(_musicPlayerStateAtom)
   if (!state) return
   set(_musicPlayerStateAtom, { ...state, playStatus: PlayStatus.paused })
@@ -67,7 +71,7 @@ const handlePauseMusicAtom = atom(null, (get, set) => {
  *
  * @param progress [0~1] 播放进度，小数
  */
-const handleUpdateMusicProgressAtom = atom(null, (get, set, progress: number) => {
+export const handleUpdateMusicProgressAtom = atom(null, (get, set, progress: number) => {
   const state = get(_musicPlayerStateAtom)
   if (!state) return
   set(_musicPlayerStateAtom, { ...state, progress: progress })
@@ -78,18 +82,7 @@ const handleUpdateMusicProgressAtom = atom(null, (get, set, progress: number) =>
  *
  * @param progress [0~1] 播放进度，小数
  */
-const handleJumpMusicProgressAtom = atom(null, (_, __, progress: number) => {
+export const handleJumpMusicProgressAtom = atom(null, (_, __, progress: number) => {
   const musicAudioElement = document.getElementById("music_player_audio") as HTMLAudioElement
   musicAudioElement.currentTime = musicAudioElement.duration * progress
 })
-
-export {
-  musicPlayerStateAtom,
-  musicPlayerVolumeAtom,
-  changeMusicFromBliVideoAtom,
-  changeMusicUrlAtom,
-  handlePlayMusicAtom,
-  handlePauseMusicAtom,
-  handleUpdateMusicProgressAtom,
-  handleJumpMusicProgressAtom,
-}

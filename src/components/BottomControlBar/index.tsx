@@ -5,7 +5,7 @@ import {
   handlePauseMusicAtom,
   musicPlayerStateAtom,
   handleJumpMusicProgressAtom,
-  musicPlayerVolumeAtom,
+  playingMusicVolumeAtom,
 } from "@/stores/MusicTrack/MusicTrack"
 import { PlayStatus } from "@/types/MusicPlayer"
 import { useEffect } from "react"
@@ -18,6 +18,7 @@ import { BiVolume, BiVolumeFull } from "react-icons/bi"
 import ProgressBar from "../lib/ProgressBar"
 import { useGlobalMusicController } from "@/hooks/useGlobalMusicController"
 import MusicImage from "@/components/common/MusicImage"
+import { CurrentPlayingMusicStorage } from "@/storage/CurrentPlayingMusic"
 
 const progressAtom = atom(0)
 const playListDrawerOpenAtom = atom(false)
@@ -143,7 +144,7 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   }
 
   function VolumeControll() {
-    const [volume, setVolume] = useAtom(musicPlayerVolumeAtom)
+    const [volume, setVolume] = useAtom(playingMusicVolumeAtom)
     return (
       <div className="mx-2 flex-1 flex items-center">
         <button
@@ -163,9 +164,12 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
         <ProgressBar
           className={""}
           progress={volume}
-          onChange={(value: number) => {
+          onChange={(value) => {
             setVolume(value)
             globalMusicController.setVolume(value)
+          }}
+          onChangeComplete={(value) => {
+            CurrentPlayingMusicStorage.setVolume(value)
           }}
         />
       </div>
