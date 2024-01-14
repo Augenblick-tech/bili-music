@@ -1,9 +1,9 @@
-import { handlePlayNextMusicAtom } from "@/stores/MusicTrack/MusicPlayList"
+import { handlePlayNextMusicAtom } from "@/stores/PlayingMusic/MusicPlayList"
 import {
   globalMusicElementAtom,
   handleUpdateMusicProgressAtom,
   musicPlayerStateAtom,
-} from "@/stores/MusicTrack/MusicTrack"
+} from "@/stores/PlayingMusic/PlayingMusic"
 import { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { PlayStatus } from "@/types/MusicPlayer"
 import { useAtom } from "jotai"
@@ -15,7 +15,7 @@ import { CurrentPlayingMusicStorage } from "@/storage/CurrentPlayingMusic"
  * 全局音乐播放轨道，作为音乐播放器情景下的核心，在视图上隐藏不可见
  */
 const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
-  const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+  const [playingMusicState] = useAtom(musicPlayerStateAtom)
 
   const audioRef = useRef<HTMLAudioElement>(null)
 
@@ -24,14 +24,14 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
   const [, setGlobalMusicElement] = useAtom(globalMusicElementAtom)
 
   useEffect(() => {
-    if (!musicPlayerState) return
-    if (musicPlayerState?.playStatus == PlayStatus.playing) {
+    if (!playingMusicState) return
+    if (playingMusicState?.playStatus == PlayStatus.playing) {
       audioRef.current?.play()
     }
-    if (musicPlayerState?.playStatus == PlayStatus.paused) {
+    if (playingMusicState?.playStatus == PlayStatus.paused) {
       audioRef.current?.pause()
     }
-  }, [musicPlayerState])
+  }, [playingMusicState])
 
   useEffect(() => {
     setGlobalMusicElement(audioRef.current)
@@ -61,7 +61,7 @@ const GlobalMusicAudio = ({ className }: MergeWithDefaultProps) => {
     <audio
       id="music_player_audio"
       className={className}
-      src={addProxyToUrl(musicPlayerState?.url ?? "")}
+      src={addProxyToUrl(playingMusicState?.url ?? "")}
       controls
       ref={audioRef}
     />

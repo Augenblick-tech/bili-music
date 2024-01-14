@@ -7,9 +7,9 @@ import { formatPlayCount, formatTime } from "@/utils/videoUtils"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { useAtom, useSetAtom } from "jotai"
 import { handleSearchResultsAtom, nextSearchResultsAtom } from "@/stores/BiliSearch/BiliSearch"
-import { changeMusicFromBliVideoAtom, handlePlayMusicAtom, musicPlayerStateAtom } from "@/stores/MusicTrack/MusicTrack"
+import { changeMusicFromBliVideoAtom, handlePlayMusicAtom, musicPlayerStateAtom } from "@/stores/PlayingMusic/PlayingMusic"
 import { useScrollToTop } from "@/hooks/useScrollToTop"
-import { replacePlayMusicListAtom } from "@/stores/MusicTrack/MusicPlayList"
+import { replacePlayMusicListAtom } from "@/stores/PlayingMusic/MusicPlayList"
 import { removeHTMLTags } from "@/utils/htmlUtil"
 import useLoading from "@/hooks/useLoading"
 import InfiniteSpin from "@/components/common/InfiniteSpin"
@@ -31,7 +31,7 @@ const SearchResult = ({ className }: MergeWithDefaultProps) => {
     return searchResult ? false : true
   }, [searchResult])
 
-  const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+  const [playingMusicState] = useAtom(musicPlayerStateAtom)
   const [, changeMusicFromBliVideo] = useAtom(changeMusicFromBliVideoAtom)
   const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
   const [, replacePlayMusicList] = useAtom(replacePlayMusicListAtom)
@@ -123,7 +123,7 @@ const SearchResult = ({ className }: MergeWithDefaultProps) => {
                                 }
                               }) as PlayListItem[],
                             )
-                            console.log(musicPlayerState)
+                            console.log(playingMusicState)
                           } catch (error) {
                             console.error(error)
                           }

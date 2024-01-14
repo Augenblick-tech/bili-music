@@ -1,6 +1,6 @@
 import { getBiliVideoInfo, getBiliVideoURL } from "@/api/BiliVideo"
-import { musicPlayListAtom } from "@/stores/MusicTrack/MusicPlayList"
-import { changeMusicFromBliVideoAtom, handlePlayMusicAtom } from "@/stores/MusicTrack/MusicTrack"
+import { musicPlayListAtom } from "@/stores/PlayingMusic/MusicPlayList"
+import { changeMusicFromBliVideoAtom, handlePlayMusicAtom } from "@/stores/PlayingMusic/PlayingMusic"
 import { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { ConfigProvider, Drawer } from "antd"
 import { useAtom } from "jotai"

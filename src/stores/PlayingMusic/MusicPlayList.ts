@@ -1,6 +1,6 @@
 import { PlayListItem } from "@/types/MusicPlayList"
 import { atom, useAtom } from "jotai"
-import { changeMusicFromBliVideoAtom, handlePlayMusicAtom, musicPlayerStateAtom } from "./MusicTrack"
+import { changeMusicFromBliVideoAtom, handlePlayMusicAtom, musicPlayerStateAtom } from "./PlayingMusic"
 import { getBiliVideoInfo, getBiliVideoURL } from "@/api/BiliVideo"
 
 /**

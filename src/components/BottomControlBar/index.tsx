@@ -6,7 +6,7 @@ import {
   musicPlayerStateAtom,
   handleJumpMusicProgressAtom,
   playingMusicVolumeAtom,
-} from "@/stores/MusicTrack/MusicTrack"
+} from "@/stores/PlayingMusic/PlayingMusic"
 import { PlayStatus } from "@/types/MusicPlayer"
 import { useEffect } from "react"
 import { FaPlay } from "react-icons/fa6"
@@ -33,33 +33,33 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   }
 
   function PlayOrPauseButton() {
-    const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+    const [playingMusicState] = useAtom(musicPlayerStateAtom)
     const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
     const [, handlePauseMusic] = useAtom(handlePauseMusicAtom)
     return (
       <button
         className="inline-flex items-center justify-center bg-gray-400/20 hover:bg-gray-400/30 active:scale-90 w-9 h-9 rounded-full"
-        aria-label={musicPlayerState?.playStatus == PlayStatus.playing ? "pause" : "play"}
+        aria-label={playingMusicState?.playStatus == PlayStatus.playing ? "pause" : "play"}
         onClick={() => {
-          if (musicPlayerState?.playStatus == PlayStatus.playing) {
+          if (playingMusicState?.playStatus == PlayStatus.playing) {
             handlePauseMusic()
           } else {
             handlePlayMusic()
           }
         }}
       >
-        {musicPlayerState?.playStatus == PlayStatus.playing ? <FaPause /> : <FaPlay />}
+        {playingMusicState?.playStatus == PlayStatus.playing ? <FaPause /> : <FaPlay />}
       </button>
     )
   }
 
   function CoverImage() {
-    const [musicPlayerState] = useAtom(musicPlayerStateAtom)
-    return musicPlayerState?.cover ? (
+    const [playingMusicState] = useAtom(musicPlayerStateAtom)
+    return playingMusicState?.cover ? (
       <MusicImage
         aria-label="cover"
         className="rounded-md w-12 h-12 object-cover"
-        src={musicPlayerState?.cover}
+        src={playingMusicState?.cover}
       ></MusicImage>
     ) : (
       <div></div>
@@ -67,36 +67,36 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   }
 
   function TitleLabel() {
-    const [musicPlayerState] = useAtom(musicPlayerStateAtom)
-    return <div className="text-sm ml-2 line-clamp-2">{musicPlayerState?.title}</div>
+    const [playingMusicState] = useAtom(musicPlayerStateAtom)
+    return <div className="text-sm ml-2 line-clamp-2">{playingMusicState?.title}</div>
   }
 
   function CurrentTimeLabel() {
-    const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+    const [playingMusicState] = useAtom(musicPlayerStateAtom)
     if (
-      !musicPlayerState?.duration ||
-      isNaN(musicPlayerState?.duration) ||
-      !musicPlayerState?.progress ||
-      isNaN(musicPlayerState?.progress)
+      !playingMusicState?.duration ||
+      isNaN(playingMusicState?.duration) ||
+      !playingMusicState?.progress ||
+      isNaN(playingMusicState?.progress)
     ) {
       return formatDuration(0)
     }
-    return formatDuration(Math.ceil((musicPlayerState?.duration ?? 0) * (musicPlayerState?.progress ?? 0)))
+    return formatDuration(Math.ceil((playingMusicState?.duration ?? 0) * (playingMusicState?.progress ?? 0)))
   }
 
   function EndingTimeLabel() {
-    const [musicPlayerState] = useAtom(musicPlayerStateAtom)
-    return formatDuration(Math.ceil(musicPlayerState?.duration ?? 0))
+    const [playingMusicState] = useAtom(musicPlayerStateAtom)
+    return formatDuration(Math.ceil(playingMusicState?.duration ?? 0))
   }
 
   function ProgressSlider() {
-    const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+    const [playingMusicState] = useAtom(musicPlayerStateAtom)
     const [progress, setProgress] = useAtom(progressAtom)
     const [, handleJumpMusicProgress] = useAtom(handleJumpMusicProgressAtom)
 
     useEffect(() => {
-      setProgress((musicPlayerState?.progress ?? 0) * 100)
-    }, [musicPlayerState, setProgress])
+      setProgress((playingMusicState?.progress ?? 0) * 100)
+    }, [playingMusicState, setProgress])
 
     return (
       <ConfigProvider

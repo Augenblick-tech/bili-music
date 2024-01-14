@@ -12,10 +12,10 @@ import { FavFolderDetailList, FavFolderListItem } from "@/types/bili/BiliUserFav
 import useInfiniteScroll from "@/hooks/useInfiniteScroll"
 import { useScrollToTop } from "@/hooks/useScrollToTop"
 import { formatDuration } from "@/utils/videoUtils"
-import { replacePlayMusicListAtom } from "@/stores/MusicTrack/MusicPlayList"
+import { replacePlayMusicListAtom } from "@/stores/PlayingMusic/MusicPlayList"
 import { getBiliVideoInfo, getBiliVideoURL } from "@/api/BiliVideo"
 import { removeHTMLTags } from "@/utils/htmlUtil"
-import { musicPlayerStateAtom, changeMusicFromBliVideoAtom, handlePlayMusicAtom } from "@/stores/MusicTrack/MusicTrack"
+import { musicPlayerStateAtom, changeMusicFromBliVideoAtom, handlePlayMusicAtom } from "@/stores/PlayingMusic/PlayingMusic"
 import type { PlayListItem } from "@/types/MusicPlayList"
 import InfiniteSpin from "@/components/common/InfiniteSpin"
 import useLoading from "@/hooks/useLoading"
@@ -29,7 +29,7 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
     await nextFavFolderDetailList()
   })
 
-  const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+  const [playingMusicState] = useAtom(musicPlayerStateAtom)
   const [, changeMusicFromBliVideo] = useAtom(changeMusicFromBliVideoAtom)
   const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
   const [, replacePlayMusicList] = useAtom(replacePlayMusicListAtom)
@@ -82,7 +82,7 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
                               }
                             }) as PlayListItem[],
                           )
-                          console.log(musicPlayerState)
+                          console.log(playingMusicState)
                         } catch (error) {
                           console.error(error)
                         }
@@ -120,7 +120,7 @@ const UserFavFolder = ({ className }: MergeWithDefaultProps) => {
   const [topRef, scrollToTop] = useScrollToTop<HTMLDivElement>()
   const [loading] = useLoading(() => favFolderDetailList?.data === undefined, [favFolderDetailList?.data])
 
-  const [musicPlayerState] = useAtom(musicPlayerStateAtom)
+  const [playingMusicState] = useAtom(musicPlayerStateAtom)
   const [, changeMusicFromBliVideo] = useAtom(changeMusicFromBliVideoAtom)
   const [, handlePlayMusic] = useAtom(handlePlayMusicAtom)
   const [, replacePlayMusicList] = useAtom(replacePlayMusicListAtom)
@@ -192,7 +192,7 @@ const UserFavFolder = ({ className }: MergeWithDefaultProps) => {
                       }
                     }) as PlayListItem[],
                   )
-                  console.log(musicPlayerState)
+                  console.log(playingMusicState)
                 } catch (error) {
                   console.error(error)
                 }

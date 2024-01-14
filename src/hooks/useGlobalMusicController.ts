@@ -1,5 +1,5 @@
 import { CurrentPlayingMusicStorage } from "@/storage/CurrentPlayingMusic"
-import { globalMusicElementAtom } from "@/stores/MusicTrack/MusicTrack"
+import { globalMusicElementAtom } from "@/stores/PlayingMusic/PlayingMusic"
 import { useAtom } from "jotai"
 
 /**
