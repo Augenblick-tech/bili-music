@@ -6,17 +6,17 @@ import {
   musicPlayerStateAtom,
   handleJumpMusicProgressAtom,
   playingMusicVolumeAtom,
+  globalMusicControllerAtom,
+  updatePlayingMusicProgressAtom,
 } from "@/stores/PlayingMusic/PlayingMusic"
 import { PlayStatus } from "@/types/MusicPlayer"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { FaPlay } from "react-icons/fa6"
 import { FaPause } from "react-icons/fa6"
-import { ConfigProvider, Slider } from "antd"
 import PlayListDrawer from "../PlayList/PlayListDrawer"
 import { PiPlaylist } from "react-icons/pi"
 import { BiVolume, BiVolumeFull } from "react-icons/bi"
 import ProgressBar from "../lib/ProgressBar"
-import { useGlobalMusicController } from "@/hooks/useGlobalMusicController"
 import MusicImage from "@/components/common/MusicImage"
 import { CurrentPlayingMusicStorage } from "@/storage/CurrentPlayingMusic"
 
@@ -24,7 +24,7 @@ const progressAtom = atom(0)
 const playListDrawerOpenAtom = atom(false)
 
 const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
-  const globalMusicController = useGlobalMusicController()
+  const [, globalMusicController] = useAtom(globalMusicControllerAtom)
 
   function formatDuration(value: number) {
     const minute = Math.floor(value / 60)
@@ -90,41 +90,40 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
   }
 
   function ProgressSlider() {
-    const [playingMusicState] = useAtom(musicPlayerStateAtom)
     const [progress, setProgress] = useAtom(progressAtom)
     const [, handleJumpMusicProgress] = useAtom(handleJumpMusicProgressAtom)
+    const [, updatePlayingMusicProgress] = useAtom(updatePlayingMusicProgressAtom)
+    const isMouseDown = useRef(false)
 
     useEffect(() => {
-      setProgress((playingMusicState?.progress ?? 0) * 100)
-    }, [playingMusicState, setProgress])
+      const interval = setInterval(() => {
+        if (!isMouseDown.current && !globalMusicController().isPaused()) {
+          const _progress = globalMusicController().getProgress()
+          setProgress(_progress)
+          updatePlayingMusicProgress(_progress)
+        }
+      }, 1000)
+      return () => clearInterval(interval)
+    }, [setProgress, updatePlayingMusicProgress])
 
     return (
-      <ConfigProvider
-        theme={{
-          components: {
-            Slider: {
-              handleLineWidthHover: 2,
-              railBg: "rgba(150, 150, 150, 0.3)",
-            },
-          },
-          token: {
-            colorPrimary: "rgb(255, 19,   103)",
-          },
+      <ProgressBar
+        className="w-full mx-2"
+        aria-label="progess"
+        progress={progress}
+        onMouseDown={() => {
+          isMouseDown.current = true
         }}
-      >
-        <Slider
-          className="w-full mx-2"
-          aria-label="progess"
-          defaultValue={0}
-          value={progress}
-          onChange={(value: number | number[]) => {
-            setProgress(value as number)
-          }}
-          onChangeComplete={(value) => {
-            handleJumpMusicProgress(value / 100)
-          }}
-        />
-      </ConfigProvider>
+        onChange={(value) => {
+          setProgress(value)
+          updatePlayingMusicProgress(value)
+        }}
+        onChangeComplete={(value) => {
+          isMouseDown.current = false
+          setProgress(value)
+          handleJumpMusicProgress(value)
+        }}
+      />
     )
   }
 
@@ -150,12 +149,12 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
         <button
           className="text-2xl text-slate-500 hover:text-slate-900 mr-2"
           onClick={() => {
-            if (globalMusicController.isMuted()) {
-              setVolume(globalMusicController.getCachedVolume())
-              globalMusicController.cancelMute()
+            if (globalMusicController().isMuted()) {
+              setVolume(globalMusicController().getCachedVolume())
+              globalMusicController().cancelMute()
             } else {
               setVolume(0)
-              globalMusicController.mute()
+              globalMusicController().mute()
             }
           }}
         >
@@ -166,7 +165,7 @@ const BottomControlBar = ({ className }: MergeWithDefaultProps) => {
           progress={volume}
           onChange={(value) => {
             setVolume(value)
-            globalMusicController.setVolume(value)
+            globalMusicController().setVolume(value)
           }}
           onChangeComplete={(value) => {
             CurrentPlayingMusicStorage.setVolume(value)

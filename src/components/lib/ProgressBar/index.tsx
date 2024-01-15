@@ -1,8 +1,6 @@
 import { useEffect, useRef } from "react"
 import ModuleClasss from "./ProgressBar.module.css"
 
-let isMouseDown = false
-
 export interface ProgressBarProps {
   className?: string
   /**
@@ -18,14 +16,17 @@ export interface ProgressBarProps {
    * Handle progress change when mouse up.
    */
   onChangeComplete?: (progress: number) => void
-  // onMouseDown?: React.MouseEventHandler<HTMLDivElement>
+  onMouseDown?: React.MouseEventHandler<HTMLDivElement>
   // onMouseUp?: React.MouseEventHandler<HTMLDivElement>
 }
 
 /**
  * 进度条组件（长条状），由当前进度与完整进度两个长条元素组成
  */
-const ProgressBar = ({ className, progress, onChange, onChangeComplete }: ProgressBarProps) => {
+const ProgressBar = ({ className, progress, onMouseDown, onChange, onChangeComplete }: ProgressBarProps) => {
+  const isMouseDown = useRef(false)
+
+  const targtRef = useRef<HTMLDivElement>(null)
   /**
    * Current progress bar in front.
    */
@@ -41,8 +42,6 @@ const ProgressBar = ({ className, progress, onChange, onChangeComplete }: Progre
     return <div className={`${ModuleClasss["progress-bar__full"]}`}></div>
   }
 
-  const targtRef = useRef<HTMLDivElement>(null)
-
   const getEventProgress = (e: MouseEvent | React.MouseEvent): number => {
     const fullWidth = targtRef.current?.clientWidth ?? 0
     const currentWidth = e.clientX - (targtRef.current?.offsetLeft ?? 0)
@@ -57,11 +56,11 @@ const ProgressBar = ({ className, progress, onChange, onChangeComplete }: Progre
 
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {
-      if (onChange && isMouseDown) onChange(getEventProgress(e))
+      if (onChange && isMouseDown.current) onChange(getEventProgress(e))
     }
     const handleUp = (e: MouseEvent) => {
-      if (onChangeComplete && isMouseDown) onChangeComplete(getEventProgress(e))
-      isMouseDown = false
+      if (onChangeComplete && isMouseDown.current) onChangeComplete(getEventProgress(e))
+      isMouseDown.current = false
     }
     document.addEventListener("mousemove", handleMove)
     document.addEventListener("mouseup", handleUp)
@@ -76,8 +75,9 @@ const ProgressBar = ({ className, progress, onChange, onChangeComplete }: Progre
       ref={targtRef}
       className={`${className} ${ModuleClasss["progress-bar"]}`}
       onMouseDown={(e) => {
+        if (onMouseDown) onMouseDown(e)
         if (onChange) onChange(getEventProgress(e))
-        isMouseDown = true
+        isMouseDown.current = true
       }}
     >
       <FullBar />

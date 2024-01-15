@@ -82,7 +82,6 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
                               }
                             }) as PlayListItem[],
                           )
-                          console.log(playingMusicState)
                         } catch (error) {
                           console.error(error)
                         }
@@ -192,7 +191,6 @@ const UserFavFolder = ({ className }: MergeWithDefaultProps) => {
                       }
                     }) as PlayListItem[],
                   )
-                  console.log(playingMusicState)
                 } catch (error) {
                   console.error(error)
                 }
