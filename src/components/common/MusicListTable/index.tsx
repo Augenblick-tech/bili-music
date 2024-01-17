@@ -1,15 +1,10 @@
-import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
-import { ConfigProvider, Table } from "antd"
+import { ConfigProvider, Table, TableProps } from "antd"
 import type { AnyObject } from "antd/es/_util/type"
-import type { GetRowKey } from "antd/es/table/interface"
 
-type MusicListTableProps<T> = MergeWithDefaultProps & {
-  dataSource?: readonly T[]
-  rowKey?: string | keyof T | GetRowKey<T> | undefined
-  size?: "small" | "middle" | "large"
-  tableLayout?: "auto" | "fixed"
-  children?: React.ReactNode
-}
+type MusicListTableProps<T> = Pick<
+  TableProps<T>,
+  "className" | "dataSource" | "rowKey" | "size" | "tableLayout" | "children" | "onRow"
+>
 
 const MusicListTable = <T extends AnyObject>({
   className,
@@ -18,6 +13,7 @@ const MusicListTable = <T extends AnyObject>({
   size = "middle",
   tableLayout,
   children,
+  onRow,
 }: MusicListTableProps<T>) => {
   return (
     <ConfigProvider
@@ -37,6 +33,7 @@ const MusicListTable = <T extends AnyObject>({
         rowKey={rowKey}
         size={size}
         pagination={false}
+        onRow={onRow}
         tableLayout={tableLayout}
         rowClassName="table-row"
         className={`
