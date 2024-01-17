@@ -7,7 +7,11 @@ import { formatPlayCount, formatTime } from "@/utils/videoUtils"
 import type { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { useAtom, useSetAtom } from "jotai"
 import { handleSearchResultsAtom, nextSearchResultsAtom } from "@/stores/BiliSearch/BiliSearch"
-import { changeMusicFromBliVideoAtom, handlePlayMusicAtom, musicPlayerStateAtom } from "@/stores/PlayingMusic/PlayingMusic"
+import {
+  changeMusicFromBliVideoAtom,
+  handlePlayMusicAtom,
+  musicPlayerStateAtom,
+} from "@/stores/PlayingMusic/PlayingMusic"
 import { useScrollToTop } from "@/hooks/useScrollToTop"
 import { replacePlayMusicListAtom } from "@/stores/PlayingMusic/MusicPlayList"
 import { removeHTMLTags } from "@/utils/htmlUtil"

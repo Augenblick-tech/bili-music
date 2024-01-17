@@ -2,9 +2,10 @@ import { handleFavFolderDetailListAtom, nextFavFolderDetailListAtom } from "@/st
 import { MergeWithDefaultProps } from "@/types/MergeWithDefaultProps"
 import { Button } from "antd"
 import { useAtom } from "jotai"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
 import { FaRegCirclePlay } from "react-icons/fa6"
+import { BiLinkExternal } from "react-icons/bi"
 import { Tabs } from "antd"
 import type { TabsProps } from "antd"
 import Column from "antd/es/table/Column"
@@ -15,12 +16,19 @@ import { formatDuration } from "@/utils/videoUtils"
 import { replacePlayMusicListAtom } from "@/stores/PlayingMusic/MusicPlayList"
 import { getBiliVideoInfo, getBiliVideoURL } from "@/api/BiliVideo"
 import { removeHTMLTags } from "@/utils/htmlUtil"
-import { musicPlayerStateAtom, changeMusicFromBliVideoAtom, handlePlayMusicAtom } from "@/stores/PlayingMusic/PlayingMusic"
+import {
+  musicPlayerStateAtom,
+  changeMusicFromBliVideoAtom,
+  handlePlayMusicAtom,
+} from "@/stores/PlayingMusic/PlayingMusic"
 import type { PlayListItem } from "@/types/MusicPlayList"
 import InfiniteSpin from "@/components/common/InfiniteSpin"
 import useLoading from "@/hooks/useLoading"
 import MusicListTable from "@/components/common/MusicListTable"
 import MusicImage from "@/components/common/MusicImage"
+import useContextMenu from "@/hooks/useContextMenu"
+import ContextMenu from "@/components/common/ContextMenu"
+import type { ContextMenuItem } from "@/types/ContextMenu"
 
 const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
   const { id } = useParams()
@@ -28,6 +36,8 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
   const [sentinel, hasMore, setHasMore] = useInfiniteScroll<HTMLDivElement>(async () => {
     await nextFavFolderDetailList()
   })
+  const menuRef = useRef(null)
+  const { visible, show } = useContextMenu(menuRef)
 
   const [playingMusicState] = useAtom(musicPlayerStateAtom)
   const [, changeMusicFromBliVideo] = useAtom(changeMusicFromBliVideoAtom)
@@ -38,8 +48,53 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
     setHasMore(true)
   }, [id, setHasMore])
 
+  const clickToPlayMusic = async (bvid: string) => {
+    try {
+      const info = await getBiliVideoInfo({ bvid })
+      const media = await getBiliVideoURL({
+        bvid,
+        cid: info.data?.cid,
+        fnval: 16,
+      })
+      changeMusicFromBliVideo(info.data, media.data)
+      handlePlayMusic()
+      replacePlayMusicList(
+        items?.medias.map((v) => {
+          return {
+            bvid: v.bvid,
+            url: media.data.dash.audio[0].baseUrl,
+            duration: info.data.pages[0].duration,
+            title: removeHTMLTags(v.title),
+            cover: v.cover,
+          }
+        }) as PlayListItem[],
+      )
+      console.log(playingMusicState)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const getContextMenuItems = (record: FavFolderListItem): ContextMenuItem[] => {
+    return [
+      {
+        key: "1",
+        icon: <FaRegCirclePlay />,
+        label: "播放",
+        onClick: () => clickToPlayMusic(record.bvid),
+      },
+      {
+        key: "2",
+        icon: <BiLinkExternal />,
+        label: "观看视频",
+        onClick: () => window.open(`https://www.bilibili.com/video/${record.bvid}`),
+      },
+    ]
+  }
+
   return (
     <div>
+      <ContextMenu ref={menuRef} visible={visible} />
       <MusicListTable<FavFolderListItem>
         dataSource={items?.medias}
         rowKey={(record) => {
@@ -48,6 +103,11 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
         size="small"
         tableLayout="fixed"
         className="ml-2.5"
+        onRow={(record) => {
+          return {
+            onContextMenu: (e) => show(e, getContextMenuItems(record)),
+          }
+        }}
       >
         <Column<FavFolderListItem>
           title="标题"
@@ -60,32 +120,8 @@ const FolderSongList = ({ items }: { items?: FavFolderDetailList }) => {
                   <MusicImage className="h-full w-full rounded object-cover" src={record.cover} alt="" />
                   <div className="cover absolute t-0 l-0 h-full w-full rounded hidden">
                     <FaRegCirclePlay
-                      onClick={async () => {
-                        // 立即播放
-                        try {
-                          const info = await getBiliVideoInfo({ bvid: record.bvid })
-                          const media = await getBiliVideoURL({
-                            bvid: record.bvid,
-                            cid: info.data?.cid,
-                            fnval: 16,
-                          })
-                          changeMusicFromBliVideo(info.data, media.data)
-                          handlePlayMusic()
-                          replacePlayMusicList(
-                            items?.medias.map((v) => {
-                              return {
-                                bvid: v.bvid,
-                                url: media.data.dash.audio[0].baseUrl,
-                                duration: info.data.pages[0].duration,
-                                title: removeHTMLTags(v.title),
-                                cover: v.cover,
-                              }
-                            }) as PlayListItem[],
-                          )
-                          console.log(playingMusicState)
-                        } catch (error) {
-                          console.error(error)
-                        }
+                      onClick={() => {
+                        clickToPlayMusic(record.bvid)
                       }}
                       className="text-white cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl"
                     />
